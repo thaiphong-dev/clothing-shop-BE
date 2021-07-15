@@ -4,7 +4,6 @@ const Role = db.role
 var bcrypt = require("bcryptjs");
 
 checkDuplicateUsernameOrEmail = (req, res, next) => {
-  console.log(bcrypt.hashSync('HakiPT@2021', 8))
   // Username
   User.findOne({
     username: req.body.username

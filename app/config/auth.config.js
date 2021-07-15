@@ -1,4 +1,4 @@
 module.exports = {
-  secret: "hakipt-secret-key",
-  secretRefreshToken: "hakipt-secret-refresh-token-key"
+  secret: "alpaca-secret-key",
+  secretRefreshToken: "alpaca-secret-refresh-token-key"
 };

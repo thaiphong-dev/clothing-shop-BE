@@ -1,3 +1,3 @@
 module.exports = {
-  URI: "mongodb+srv://admin:6bBB1UuUWoUiSgoo@cluster0.njn2j.mongodb.net/hakipt_cloud?retryWrites=true&w=majority"
+  URI: "mongodb+srv://admin:Y6RFmPTJHSMCLha7@cluster0.rrm4d.mongodb.net/alpaca_admin_dev?retryWrites=true&w=majority"
 };
