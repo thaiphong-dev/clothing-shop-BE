@@ -1,5 +1,5 @@
 const { authJwt, verifySignUp } = require("../middlewares");
-const controller = require("../controllers/user.controller");
+const controller = require("../controllers/annual-leave.controller");
 
 module.exports = function (app) {
   app.use(function (req, res, next) {
@@ -10,29 +10,13 @@ module.exports = function (app) {
     next();
   });
 
-  app.get("/test/all", controller.allAccess);
-
-  app.get("/test/user", [authJwt.verifyToken], controller.userBoard);
-
-  app.get(
-    "/test/mod",
-    [authJwt.verifyToken, authJwt.isModerator],
-    controller.moderatorBoard
-  );
-
-  app.get(
-    "/test/admin",
-    [authJwt.verifyToken, authJwt.isAdmin],
-    controller.adminBoard
-  );
-
   /**
    * @swagger
-   * /users:
+   * /annual-leave:
    *    post:
    *      tags:
-   *        - Users
-   *      summary: Add a new user
+   *        - Annual-leave
+   *      summary: Add a new annual-leave
    *      requestBody:
    *        required: true
    *        content:
@@ -40,53 +24,55 @@ module.exports = function (app) {
    *            schema:
    *              type: object
    *              properties:
-   *                email:
+   *                fullName:
    *                  type: string
-   *                fullname:
+   *                teamName:
    *                  type: string
-   *                password:
+   *                teamLeader:
    *                  type: string
-   *                username:
+   *                fromDate:
    *                  type: string
+   *                toDate:
+   *                  type: string
+   *                type:
+   *                  type: string
+   *                reason:
+   *                  type: string
+   *                createdDate:
+   *                  type: string
+   *                createdBy:
+   *                  type: string
+   *      security:
+   *        JWT: []
+   *      responses:
+   *        200:
+   *          description: Receive back annual-leaveId.
+   *
+   */
+  app.post("/annual-leave", controller.addAnnualLeave);
+
+  /**
+   * @swagger
+   * /annual-leave:
+   *    get:
+   *      tags:
+   *        - Annual-leave
+   *      summary: Get all annual-leave
    *      security:
    *        - JWT: []
    *      responses:
    *        200:
-   *          description: Receive back userId.
+   *          description: Receive back a annual-leave list.
    */
-  app.post(
-    "/users",
-    [
-      authJwt.verifyToken,
-      authJwt.isAdmin,
-      verifySignUp.checkDuplicateUsernameOrEmail,
-      verifySignUp.checkRolesExisted,
-    ],
-    controller.addUser
-  );
+  app.get("/annual-leave", [authJwt.verifyToken], controller.getAll);
 
   /**
    * @swagger
-   * /users:
+   * /annual-leave/{id}:
    *    get:
    *      tags:
-   *        - Users
-   *      summary: Get all users
-   *      security:
-   *        - JWT: []
-   *      responses:
-   *        200:
-   *          description: Receive back a user list.
-   */
-  app.get("/users", [authJwt.verifyToken, authJwt.isAdmin], controller.getAll);
-
-  /**
-   * @swagger
-   * /users/{id}:
-   *    get:
-   *      tags:
-   *        - Users
-   *      summary: Get user by id
+   *        - Annual-leave
+   *      summary: Get annual-leave by id
    *      parameters:
    *        - name: id
    *          in: path
@@ -96,17 +82,21 @@ module.exports = function (app) {
    *        - JWT: []
    *      responses:
    *        200:
-   *          description: Receive back userId.
+   *          description: Receive back annual-leaveId.
    */
-  app.get("/users/:id", [authJwt.verifyToken], controller.getUser);
+  app.get(
+    "/annual-leave/:id",
+    [authJwt.verifyToken],
+    controller.getAnnualLeave
+  );
 
   /**
    * @swagger
-   * /users/{id}:
+   * /annual-leave/{id}:
    *    post:
    *      tags:
-   *        - Users
-   *      summary: Update user by id
+   *        - Annual-leave
+   *      summary: Update annual-leave by id
    *      parameters:
    *        - name: id
    *          in: path
@@ -115,27 +105,31 @@ module.exports = function (app) {
    *      requestBody:
    *        required: true
    *        content:
-   *          application/:
+   *          application/json:
    *            schema:
    *              type: object
    *              properties:
-   *                fullName:
+   *                status:
    *                  type: string
    *      security:
    *        - JWT: []
    *      responses:
    *        200:
-   *          description: Receive back userId.
+   *          description: Receive back annual-leaveId.
    */
-  app.post("/users/:id", [authJwt.verifyToken], controller.getUser);
+  app.post(
+    "/annual-leave/:id",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    controller.updateAnnualLeave
+  );
 
   /**
    * @swagger
-   * /users/{id}:
+   * /annual-leave/{id}:
    *    delete:
    *      tags:
-   *        - Users
-   *      summary: Delete a user by id
+   *        - Annual-leave
+   *      summary: Delete a annual-leave by id
    *      parameters:
    *        - name: id
    *          in: path
@@ -147,11 +141,11 @@ module.exports = function (app) {
    *        400:
    *          description: Invalid Id.
    *        404:
-   *          description: User not found.
+   *          descriptionL: Annual-leave not found.
    */
   app.delete(
-    "/users/:id",
-    [authJwt.verifyToken, authJwt.isAdmin],
-    controller.deleteUser
+    "/annual-leave/:id",
+    [authJwt.verifyToken],
+    controller.deleteAnnualLeave
   );
 };

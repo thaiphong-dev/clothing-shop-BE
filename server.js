@@ -7,7 +7,7 @@ const swaggerUi = require("swagger-ui-express");
 const app = express();
 
 var corsOptions = {
-  origin: "http://localhost:3000"
+  origin: "http://localhost:3000",
 };
 
 app.use(cors(corsOptions));
@@ -24,13 +24,13 @@ const Role = db.role;
 db.mongoose
   .connect(`${dbConfig.URI}`, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   })
   .then(() => {
     console.log("Successfully connect to MongoDB.");
     initial();
   })
-  .catch(err => {
+  .catch((err) => {
     console.error("Connection error", err);
     process.exit();
   });
@@ -44,9 +44,9 @@ const swaggerOptions = {
       title: "Customer API",
       description: "Customer API Information",
       contact: {
-        name: "Amazing Developer"
+        name: "Amazing Developer",
       },
-      servers: ["http://localhost:5000"]
+      servers: ["http://localhost:5000"],
     },
     components: {
       securitySchemes: {
@@ -54,16 +54,18 @@ const swaggerOptions = {
           type: "http",
           scheme: "bearer",
           in: "header",
-          bearerFormat: "JWT"
-        }
+          bearerFormat: "JWT",
+        },
       },
 
-      security: [{
-        JWT: []
-      }]
+      security: [
+        {
+          JWT: [],
+        },
+      ],
     },
   },
-  apis: ["./app/routes/*.js"]
+  apis: ["./app/routes/*.js"],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
@@ -74,7 +76,7 @@ require("./app/routes/auth.routes")(app);
 require("./app/routes/user.routes")(app);
 require("./app/routes/role.routes")(app);
 require("./app/routes/contract.routes")(app);
-
+require("./app/routes/annual-leave.routes")(app);
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
@@ -85,8 +87,8 @@ function initial() {
   Role.estimatedDocumentCount((err, count) => {
     if (!err && count === 0) {
       new Role({
-        name: "user"
-      }).save(err => {
+        name: "user",
+      }).save((err) => {
         if (err) {
           console.log("error", err);
         }
@@ -95,8 +97,8 @@ function initial() {
       });
 
       new Role({
-        name: "moderator"
-      }).save(err => {
+        name: "moderator",
+      }).save((err) => {
         if (err) {
           console.log("error", err);
         }
@@ -105,8 +107,8 @@ function initial() {
       });
 
       new Role({
-        name: "admin"
-      }).save(err => {
+        name: "admin",
+      }).save((err) => {
         if (err) {
           console.log("error", err);
         }

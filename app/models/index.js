@@ -8,4 +8,5 @@ db.mongoose = mongoose;
 db.user = require("./user.model");
 db.role = require("./role.model");
 db.contract = require("./contract.model");
+db.annualLeave = require("./annual-leave.model");
 module.exports = db;
