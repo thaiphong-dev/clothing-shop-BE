@@ -7,7 +7,6 @@ const Menu = mongoose.model(
         icon: String,
         link: String,
         order: Number,
-        parent: String,
         roleLevel: Number,
     })
 );

@@ -1,10 +1,9 @@
 const db = require("../models")
 
-const Menu = db.Menu
+const Menu = db.menu
 
-//Created
 exports.addMenu = (req, res) => {
-    const Menu = new Menu({
+    const menu = new Menu({
         label: req.body.label,
         icon: req.body.icon,
         link: req.body.link,
@@ -12,25 +11,65 @@ exports.addMenu = (req, res) => {
         roleLevel: req.body.roleLevel,
     })
 
-    User.findOne({ _id: req.body.itemId}, (err, item) => {
-        if (!item) {
-            res.status(404).send({ message: "No item founded" })
+    menu.save((err, menu) => {
+        if(err) {
+            res.status(500).send({ message: err })
+            return 
+        }
+        res.status(200).send(menu.label)
+    }) 
+}
+
+exports.getAll = (req, res) => {
+    Menu.find({}, "fullname username email roles", (err, menu) => {
+        if(err) {
+            res.status(500).send({ message: err })
             return
         }
-
-        if (err) {
-            res.status(404).send({ message : err})
-        }
+        res.send({ menu: menu, total: menu.length })
     })
 }
 
-//Read
-exports.getAllMenu = (req, res) => {
-    Menu.find({}, "")
+exports.getMenu = (req, res) => {
+    Menu.find({ _id: req.params.id }, (err, menu) => {
+        if(err) {
+            res.status(500).send({ message: err })
+            return
+        }
+        res.send(menu)
+    })
 }
 
-//Create
+exports.updateMenu = (req,res) => {
+    if (!req.body){
+        return res.status(500).send({ 
+            message: "Data to update can not be empty"
+        })
+    }
+    const id = req.params.id
 
+    Menu.findByIdAndUpdate(id, req.body , { useFindAndModify: false})
+        .then(data => {
+            if (!data) {
+            res.status(404).send({
+                message: `Cannot update Menu Item with id=${id}. Maybe Menu Item was not found!`
+            });
+            } else res.send({ message: "Menu Item was updated successfully." });
+        })
+        .catch(err => {
+            res.status(500).send({
+            message: "Error updating Menu Item with id=" + id
+        })
+    })
+}
 
-//Delete
-
+exports.deleteMenu = (req, res) => {
+    const id = req.params.id
+    Menu.findByIdAndRemove(id, { useFindAndModify: false}, (err) => {
+        if (err) {
+            res.status(500).send({ message: err })
+            return
+        }
+        res.send({ message: "Menu Item was deleted successfully!" })
+    })
+}
