@@ -44,7 +44,7 @@ module.exports = function (app) {
         "/menu",
         [
             authJwt.verifyToken,
-            //authJwt.isAdmin
+            authJwt.isAdmin
         ],
         controller.addMenu
     )
@@ -131,7 +131,8 @@ module.exports = function (app) {
     app.put(
         "/menu/:id",
         [
-            authJwt.verifyToken
+            authJwt.verifyToken, 
+            authJwt.isAdmin
         ],
         controller.updateMenu
     )
@@ -158,7 +159,8 @@ module.exports = function (app) {
     app.delete(
         "/menu/:id",
         [
-            authJwt.verifyToken
+            authJwt.verifyToken, 
+            authJwt.isAdmin
         ],
         controller.deleteMenu
     )
