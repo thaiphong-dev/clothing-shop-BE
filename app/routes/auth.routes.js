@@ -44,4 +44,8 @@ module.exports = function (app) {
   app.post("/auth/signin", controller.signin)
 
   app.post("/auth/refresh-token", controller.refreshToken)
+
+  app.put("/auth/forgot-password", controller.forgotPassword)
+
+  app.put("/auth/reset-password", controller.resetPassword)
 }

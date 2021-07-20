@@ -1,5 +1,9 @@
 const config = require("../config/auth.config");
 const db = require("../models");
+const sendEmailConfig = require("../config/sendEmail.config")
+const sgMail = require("@sendgrid/mail")
+const sendEmail = require("../util/sendEmail")
+
 const User = db.user;
 const Role = db.role;
 
@@ -152,5 +156,61 @@ exports.refreshToken = (req, res) => {
     return res.status(200).send(response);
   } catch (e) {
     return res.status(401).send({ message: "Invalid refresh token" });
+  }
+}
+
+exports.forgotPassword = (req, res) => {
+  const { email } = req.body
+  sgMail.setApikey = 
+
+  User.findOne( { email }, (err, user) => {
+    if( err || !user) {
+      return res.status(400).send({ error: "User with this email doesn't exist!" })
+    }
+
+    const token = jwt.sign({ id: user.id }, sendEmailConfig.reset_password_key, { expiresIn: '30m'})
+    return user.updateOne({ resetLink: token }, (err, success) => {
+      if(err) {
+        return res.status(400).json({ err: "reset password link error" })
+      } else {
+        sendEmail(
+          email,
+          'anh.ha@alpaca.vn',
+          'Reset Password Link',
+          `
+          <h2>Please click on the given link to reset your password</h2>
+          <p>${sendEmailConfig.local_url}/reset-password/${token}</p>
+          `
+        )
+        return res.json({ message: "Email has been sent, kindly follow the instruction" })
+      }
+    })
+  })
+}
+
+exports.resetPassword = async(req, res) => {
+  try {
+    const { resetLink, password } = req.body
+    if(resetLink) {
+      jwt.verify(resetLink, sendEmailConfig.reset_password_key, (err, decoded) => {
+        req.userId = decoded.id
+        if(err){
+          return res.status(401).json({ error: "Incorrect link or it is expired" })
+        }
+      })
+    }
+    await User.findByIdAndUpdate( req.userId , password, (err, user) => {
+      if( err || !user) return res.status(400).json({ error: "User does not exist " })
+      bcrypt.hash(password, 8).then((hashed) => {
+        user.password = hashed
+        user.resetLink = ''
+        user.save((err, result) => {
+          if(err) return res.status(400).json( {error: "reset password failed" })
+        return res.status(200).json({ message: "Your password has been changed" })
+        })
+      })
+    })
+  } catch(e) {
+    return res.status(401).json({ error: "Authentication failed" })
   }
 }
