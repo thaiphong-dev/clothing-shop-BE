@@ -16,7 +16,7 @@ module.exports = function (app) {
    *    post:
    *      tags:
    *        - Annual-leave
-   *      summary: Add a new annual-leave
+   *      summary: Add a new annualLeave
    *      requestBody:
    *        required: true
    *        content:
@@ -38,18 +38,14 @@ module.exports = function (app) {
    *                  type: string
    *                reason:
    *                  type: string
-   *                createdDate:
-   *                  type: string
-   *                createdBy:
-   *                  type: string
    *      security:
-   *        JWT: []
+   *        - JWT: []
    *      responses:
    *        200:
-   *          description: Receive back annual-leaveId.
+   *          description: Receive back annualLeaveId.
    *
    */
-  app.post("/annual-leave", controller.addAnnualLeave);
+  app.post("/annual-leave", [authJwt.verifyToken], controller.addAnnualLeave);
 
   /**
    * @swagger
@@ -57,12 +53,12 @@ module.exports = function (app) {
    *    get:
    *      tags:
    *        - Annual-leave
-   *      summary: Get all annual-leave
+   *      summary: Get all annualLeave
    *      security:
    *        - JWT: []
    *      responses:
    *        200:
-   *          description: Receive back a annual-leave list.
+   *          description: Receive back a annualLeave list.
    */
   app.get("/annual-leave", [authJwt.verifyToken], controller.getAll);
 
@@ -72,7 +68,7 @@ module.exports = function (app) {
    *    get:
    *      tags:
    *        - Annual-leave
-   *      summary: Get annual-leave by id
+   *      summary: Get annualLeave by id
    *      parameters:
    *        - name: id
    *          in: path
@@ -82,7 +78,7 @@ module.exports = function (app) {
    *        - JWT: []
    *      responses:
    *        200:
-   *          description: Receive back annual-leaveId.
+   *          description: Receive back annualLeaveId.
    */
   app.get(
     "/annual-leave/:id",
@@ -96,7 +92,7 @@ module.exports = function (app) {
    *    post:
    *      tags:
    *        - Annual-leave
-   *      summary: Update annual-leave by id
+   *      summary: Update annualLeave by id
    *      parameters:
    *        - name: id
    *          in: path
@@ -115,7 +111,7 @@ module.exports = function (app) {
    *        - JWT: []
    *      responses:
    *        200:
-   *          description: Receive back annual-leaveId.
+   *          description: Receive back annualLeaveId.
    */
   app.post(
     "/annual-leave/:id",
@@ -129,7 +125,7 @@ module.exports = function (app) {
    *    delete:
    *      tags:
    *        - Annual-leave
-   *      summary: Delete a annual-leave by id
+   *      summary: Delete a annualLeave by id
    *      parameters:
    *        - name: id
    *          in: path
@@ -141,7 +137,7 @@ module.exports = function (app) {
    *        400:
    *          description: Invalid Id.
    *        404:
-   *          descriptionL: Annual-leave not found.
+   *          descriptionL: AnnualLeave not found.
    */
   app.delete(
     "/annual-leave/:id",
