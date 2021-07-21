@@ -1,30 +1,30 @@
-const { authJwt, verifySignUp } = require("../middlewares")
-const controller = require("../controllers/user.controller")
+const { authJwt, verifySignUp } = require("../middlewares");
+const controller = require("../controllers/user.controller");
 
 module.exports = function (app) {
   app.use(function (req, res, next) {
     res.header(
       "Access-Control-Allow-Headers",
       "authorization, Origin, Content-Type, Accept"
-    )
-    next()
-  })
+    );
+    next();
+  });
 
-  app.get("/test/all", controller.allAccess)
+  app.get("/test/all", controller.allAccess);
 
-  app.get("/test/user", [authJwt.verifyToken], controller.userBoard)
+  app.get("/test/user", [authJwt.verifyToken], controller.userBoard);
 
   app.get(
     "/test/mod",
     [authJwt.verifyToken, authJwt.isModerator],
     controller.moderatorBoard
-  )
+  );
 
   app.get(
     "/test/admin",
     [authJwt.verifyToken, authJwt.isAdmin],
     controller.adminBoard
-  )
+  );
 
   /**
    * @swagger
@@ -60,10 +60,10 @@ module.exports = function (app) {
       authJwt.verifyToken,
       authJwt.isAdmin,
       verifySignUp.checkDuplicateUsernameOrEmail,
-      verifySignUp.checkRolesExisted
+      verifySignUp.checkRolesExisted,
     ],
     controller.addUser
-  )
+  );
 
   /**
    * @swagger
@@ -78,14 +78,7 @@ module.exports = function (app) {
    *        200:
    *          description: Receive back a user list.
    */
-  app.get(
-    "/users",
-    [
-      authJwt.verifyToken,
-      authJwt.isAdmin
-    ],
-    controller.getAll
-  )
+  app.get("/users", [authJwt.verifyToken, authJwt.isAdmin], controller.getAll);
 
   /**
    * @swagger
@@ -105,9 +98,7 @@ module.exports = function (app) {
    *        200:
    *          description: Receive back userId.
    */
-  app.get("/users/:id", [
-    authJwt.verifyToken,
-  ], controller.getUser)
+  app.get("/users/:id", [authJwt.verifyToken], controller.getUser);
 
   /**
    * @swagger
@@ -136,9 +127,7 @@ module.exports = function (app) {
    *        200:
    *          description: Receive back userId.
    */
-  app.post("/users/:id", [
-    authJwt.verifyToken,
-  ], controller.getUser)
+  app.post("/users/:id", [authJwt.verifyToken], controller.getUser);
 
   /**
    * @swagger
@@ -164,5 +153,5 @@ module.exports = function (app) {
     "/users/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     controller.deleteUser
-  )
-}
+  );
+};
