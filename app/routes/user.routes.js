@@ -67,7 +67,7 @@ module.exports = function (app) {
 
   /**
    * @swagger
-   * /users:
+   * /users/:
    *    get:
    *      tags:
    *        - Users
