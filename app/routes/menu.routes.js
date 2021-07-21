@@ -1,21 +1,21 @@
-const { authJwt } = require("../middlewares")
-const controller = require("../controllers/menu.controller")
+const { authJwt } = require("../middlewares");
+const controller = require("../controllers/menu.controller");
 
 module.exports = function (app) {
-    app.use(function (req, res, next) {
-        res.header(
-            "Access-Control-Alow-Headers",
-            "authorization, Origin, Content-Type, Accept"
-        )
-        next()
-    })
+  app.use(function (req, res, next) {
+    res.header(
+      "Access-Control-Alow-Headers",
+      "authorization, Origin, Content-Type, Accept"
+    );
+    next();
+  });
 
-    /**
+  /**
    * @swagger
    * /menu:
    *    post:
    *      tags:
-   *        - Menu 
+   *        - Menu
    *      summary: Add a new menu item
    *      requestBody:
    *        required: true
@@ -29,7 +29,7 @@ module.exports = function (app) {
    *                icon:
    *                  type: string
    *                link:
-   *                  type: string            
+   *                  type: string
    *                order:
    *                  type: number
    *                roleLevel:
@@ -40,20 +40,14 @@ module.exports = function (app) {
    *        200:
    *          description: Receive back menu label.
    */
-    app.post(
-        "/menu",
-        [
-            authJwt.verifyToken,
-            authJwt.isAdmin
-        ],
-        controller.addMenu
-    )
-    /**
+  app.post("/menu", [authJwt.verifyToken, authJwt.isAdmin], controller.addMenu);
+
+  /**
    * @swagger
    * /menu:
    *    get:
    *      tags:
-   *        - Menu 
+   *        - Menu
    *      summary: Get all menu items
    *      security:
    *        - JWT: []
@@ -61,14 +55,9 @@ module.exports = function (app) {
    *        200:
    *          description: Receive back a menu list.
    */
-    app.get(
-        "/menu",
-        [
-            authJwt.verifyToken
-        ],
-        controller.getAll
-    )
-    /**
+  app.get("/menu", [authJwt.verifyToken], controller.getAll);
+
+  /**
    * @swagger
    * /menu/{id}:
    *    get:
@@ -86,19 +75,14 @@ module.exports = function (app) {
    *        200:
    *          description: Receive back menuId.
    */
-    app.get(
-        "/menu/:id", 
-        [
-            authJwt.verifyToken
-        ],
-        controller.getMenu
-    )
-    /**
+  app.get("/menu/:id", [authJwt.verifyToken], controller.getMenu);
+
+  /**
    * @swagger
    * /menu/{id}:
    *    put:
    *      tags:
-   *        - Menu 
+   *        - Menu
    *      summary: Update menu item
    *      parameters:
    *        - name: id
@@ -113,7 +97,7 @@ module.exports = function (app) {
    *              type: object
    *              properties:
    *                label:
-   *                  type: string 
+   *                  type: string
    *                icon:
    *                  type: string
    *                link:
@@ -128,14 +112,12 @@ module.exports = function (app) {
    *        200:
    *          description: Receive back a menu item that updated.
    */
-    app.put(
-        "/menu/:id",
-        [
-            authJwt.verifyToken, 
-            authJwt.isAdmin
-        ],
-        controller.updateMenu
-    )
+  app.put(
+    "/menu/:id",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    controller.updateMenu
+  );
+
   /**
    * @swagger
    * /menu/{id}:
@@ -156,12 +138,9 @@ module.exports = function (app) {
    *        404:
    *          description: Menu Item not found.
    */
-    app.delete(
-        "/menu/:id",
-        [
-            authJwt.verifyToken, 
-            authJwt.isAdmin
-        ],
-        controller.deleteMenu
-    )
-}
+  app.delete(
+    "/menu/:id",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    controller.deleteMenu
+  );
+};
