@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const AnnualLeave = mongoose.model(
-  "AnnualLeave",
+  "annual-leave",
   new mongoose.Schema({
     fullName: String,
     teamName: String,
