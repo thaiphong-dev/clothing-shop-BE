@@ -22,16 +22,6 @@ exports.addMenu = (req, res) => {
   });
 };
 
-exports.getAll = (req, res) => {
-  Menu.find({}, (err, menu) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
-    res.send({ menu: menu, total: menu.length });
-  });
-};
-
 exports.getMenuById = (req, res) => {
   Menu.find({ _id: req.params.id }, (err, menu) => {
     if (err) {
@@ -77,7 +67,7 @@ exports.getMenuByRoles = (req, res) => {
               res.send(menu);
             });
           } else {
-            return;
+            return res.send({ message: "You don't have role to view" });
           }
         }
       }

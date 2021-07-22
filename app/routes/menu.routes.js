@@ -44,21 +44,6 @@ module.exports = function (app) {
 
   /**
    * @swagger
-   * /menu:
-   *    get:
-   *      tags:
-   *        - Menu
-   *      summary: Get all menu items
-   *      security:
-   *        - JWT: []
-   *      responses:
-   *        200:
-   *          description: Receive back a menu list.
-   */
-  //app.get("/menu", [authJwt.verifyToken], controller.getAll);
-
-  /**
-   * @swagger
    * /menu/{id}:
    *    get:
    *      tags:
@@ -88,7 +73,7 @@ module.exports = function (app) {
    *        - JWT: []
    *      responses:
    *        200:
-   *          description: Receive bac.
+   *          description: Receive back menu match each role
    */
   app.get("/menu", [authJwt.verifyToken], controller.getMenuByRoles);
 
