@@ -101,7 +101,7 @@ exports.signin = (req, res) => {
       var authorities = [];
 
       for (let i = 0; i < user.roles.length; i++) {
-        authorities.push(user.roles[i].name.toUpperCase());
+        authorities.push(user.roles[i].name.toLowerCase());
       }
 
       // TODO: get data from server
@@ -110,10 +110,9 @@ exports.signin = (req, res) => {
         refreshToken: refreshToken,
         userData: {
           id: user._id,
-          fullName: 'John Doe',
+          fullName: user.fullName,
           username: user.username,
-          password: 'admin',
-          avatar: '/static/media/avatar-s-11.1d46cc62.jpg',
+          avatar: '',
           email: user.email,
           role: authorities,
           ability: [
@@ -121,10 +120,7 @@ exports.signin = (req, res) => {
               action: 'manage',
               subject: 'all'
             }
-          ],
-          extras: {
-            eCommerceCartItemsCount: 15
-          }
+          ]
         },
       });
     });
