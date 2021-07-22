@@ -1,6 +1,8 @@
 const db = require("../models");
 
 const Menu = db.menu;
+const User = db.user;
+const Role = db.role;
 
 exports.addMenu = (req, res) => {
   const menu = new Menu({
@@ -21,7 +23,7 @@ exports.addMenu = (req, res) => {
 };
 
 exports.getAll = (req, res) => {
-  Menu.find({}, "fullname username email roles", (err, menu) => {
+  Menu.find({}, (err, menu) => {
     if (err) {
       res.status(500).send({ message: err });
       return;
@@ -30,13 +32,56 @@ exports.getAll = (req, res) => {
   });
 };
 
-exports.getMenu = (req, res) => {
+exports.getMenuById = (req, res) => {
   Menu.find({ _id: req.params.id }, (err, menu) => {
     if (err) {
       res.status(500).send({ message: err });
       return;
     }
     res.send(menu);
+  });
+};
+
+exports.getMenuByRoles = (req, res) => {
+  User.findById(req.userId).exec((err, user) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    Role.find(
+      {
+        _id: { $in: user.roles },
+      },
+      (err, roles) => {
+        if (err) {
+          res.status(500).send({ message: err });
+          return;
+        }
+
+        for (let i = 0; i < roles.length; i++) {
+          if (roles[i].name == "Admin") {
+            Menu.find({}, (err, menu) => {
+              if (err) {
+                res.status(400).send({ message: err });
+                return;
+              }
+              res.send(menu);
+            });
+          } else if (roles[i].name == "User") {
+            Menu.find({ roleLevel: 1 }, (err, menu) => {
+              if (err) {
+                res.status(400).send({ message: err });
+                return;
+              }
+              res.send(menu);
+            });
+          } else {
+            return;
+          }
+        }
+      }
+    );
   });
 };
 

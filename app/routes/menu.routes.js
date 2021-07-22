@@ -55,7 +55,7 @@ module.exports = function (app) {
    *        200:
    *          description: Receive back a menu list.
    */
-  app.get("/menu", [authJwt.verifyToken], controller.getAll);
+  //app.get("/menu", [authJwt.verifyToken], controller.getAll);
 
   /**
    * @swagger
@@ -75,7 +75,22 @@ module.exports = function (app) {
    *        200:
    *          description: Receive back menuId.
    */
-  app.get("/menu/:id", [authJwt.verifyToken], controller.getMenu);
+  app.get("/menu/:id", [authJwt.verifyToken], controller.getMenuById);
+
+  /**
+   * @swagger
+   * /menu:
+   *    get:
+   *      tags:
+   *        - Menu
+   *      summary: Get menu by roles
+   *      security:
+   *        - JWT: []
+   *      responses:
+   *        200:
+   *          description: Receive bac.
+   */
+  app.get("/menu", [authJwt.verifyToken], controller.getMenuByRoles);
 
   /**
    * @swagger
