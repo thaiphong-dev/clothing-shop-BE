@@ -6,12 +6,12 @@ const AnnualLeave = mongoose.model(
     fullName: String,
     teamName: String,
     teamLeader: String,
-    fromDate: String,
-    toDate: String,
+    fromDate: Date,
+    toDate: Date,
     type: String,
     status: String,
     reason: String,
-    createdDate: String,
+    createdDate: Date,
     createdBy: String,
   })
 );

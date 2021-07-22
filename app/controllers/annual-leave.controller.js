@@ -1,6 +1,7 @@
 const db = require("../models");
 const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config.js");
+const moment = require("moment");
 const AnnualLeave = db.annualLeave;
 
 exports.addAnnualLeave = (req, res) => {
@@ -27,12 +28,13 @@ exports.addAnnualLeave = (req, res) => {
     fullName: req.body.fullName,
     teamName: req.body.teamName,
     teamLeader: req.body.teamLeader,
-    fromDate: req.body.fromDate,
-    toDate: req.body.toDate,
+    fromDate: moment.utc(req.body.fromDate, "YYYY-MM-DD"), //moment(req.body.fromDate), // ;
+    toDate: moment.utc(req.body.toDate, "YYYY-MM-DD"), //moment(req.body.toDate), //
     type: req.body.type,
     status: "pending",
     reason: req.body.reason,
-    createdDate: `${date.getFullYear()}-${month}-${day}`,
+    // createdDate: `${date.getFullYear()}-${month}-${day}`,
+    createdDate: moment.utc(),
     createdBy: req.userId,
   });
   annualLeave.save((err, annualLeave) => {
