@@ -67,5 +67,30 @@ module.exports = function (app) {
    */
   app.put("/auth/forgot-password", controller.forgotPassword)
 
-  app.put("/auth/reset-password/:token", controller.resetPassword)
+  /**
+   * @swagger
+   * /auth/reset-password/{token}:
+   *    post:
+   *      tags:
+   *        - Authentication
+   *      summary: Using link with token to reset password.
+   *      parameters:
+   *        - name: token
+   *          in: path
+   *          required: true
+   *          type: string
+   *      requestBody:
+   *        required: true
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                password:
+   *                  type: string 
+   *      responses:
+   *        200:
+   *          description: Change password successfully
+   */
+  app.post("/auth/reset-password/:token", controller.resetPassword)
 }

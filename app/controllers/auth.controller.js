@@ -2,7 +2,6 @@ const config = require("../config/auth.config");
 const db = require("../models");
 const sendEmailConfig = require("../config/sendEmail.config")
 const sendEmail = require("../util/sendEmail")
-var ObjectId = require('mongodb').ObjectID;
 
 const User = db.user;
 const Role = db.role;
@@ -160,7 +159,7 @@ exports.refreshToken = (req, res) => {
   }
 }
 
-exports.forgotPassword = async (req, res, next) => {
+exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
     const user =  await User.findOne({ email }, (err, user) => {
@@ -170,7 +169,7 @@ exports.forgotPassword = async (req, res, next) => {
     });
     const token = jwt.sign({ id: user._id }, sendEmailConfig.reset_password_key, { expiresIn: '30m'})
 
-    await sendEmail(
+    sendEmail(
       email,
       'anh.ha@alpaca.vn',
       'Reset Password Link',
@@ -187,7 +186,7 @@ exports.forgotPassword = async (req, res, next) => {
 
 exports.resetPassword = async (req, res, next) => {
   try {
-    const { password, email } = req.body
+    const { password } = req.body
     const { token } = req.params
     const hashed = bcrypt.hashSync(password, 8)
 
@@ -196,13 +195,15 @@ exports.resetPassword = async (req, res, next) => {
         if (err) {
           return res.status(401).json({ error: "Incorrect link or it is expired" });
         }
+        req.userId = decoded.id
       })
     }
 
-    await User.findOneAndUpdate( { email: email }, {password: hashed} , { useFindAndModify:false }, (err, user) => {
-      if( err || !user) return res.status(400).json({ error: "Password change failed. Please check your email" })
-      })
-      return res.status(200).json({ message: "Your password has been changed" })
+    await User.findOneAndUpdate( req.userId, {password: hashed} , { useFindAndModify:false }, (err, user) => {
+      if( err || !user) 
+      return res.status(400).json({ error: "Password change failed. Please check your email" })
+    })
+    return res.status(200).json({ message: "Your password has been changed" })
   } catch(e) {
     return json("Something wrong")
   }
