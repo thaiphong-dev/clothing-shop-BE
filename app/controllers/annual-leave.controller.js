@@ -15,25 +15,16 @@ exports.addAnnualLeave = (req, res) => {
     req.userId = decoded.id;
   });
 
-  const date = new Date();
-  let month = date.getMonth() + 1; // because month in js start at 0 = jannuary
-  let day = date.getDate();
-  if (month < 10) {
-    month = "0" + month;
-  } else if (day < 10) {
-    day = "0" + month;
-  }
-
   const annualLeave = new AnnualLeave({
+    userId: req.userId,
     fullName: req.body.fullName,
     teamName: req.body.teamName,
     teamLeader: req.body.teamLeader,
-    fromDate: moment.utc(req.body.fromDate, "YYYY-MM-DD"), //moment(req.body.fromDate), // ;
-    toDate: moment.utc(req.body.toDate, "YYYY-MM-DD"), //moment(req.body.toDate), //
+    fromDate: moment.utc(req.body.fromDate, "YYYY-MM-DD"),
+    toDate: moment.utc(req.body.toDate, "YYYY-MM-DD"),
     type: req.body.type,
     status: "pending",
     reason: req.body.reason,
-    // createdDate: `${date.getFullYear()}-${month}-${day}`,
     createdDate: moment.utc(),
     createdBy: req.userId,
   });
@@ -42,14 +33,14 @@ exports.addAnnualLeave = (req, res) => {
       res.status(500).send({ message: err });
       return;
     }
-    res.send("AnnualLeave was added successfully!");
+    res.send("Annual Leave was added successfully!");
   });
 };
 
 exports.getAll = (req, res) => {
   AnnualLeave.find(
     {},
-    "fullName teamName teamLeader fromDate toDate type status reason createdDate createdBy",
+    "userId fullName teamName teamLeader fromDate toDate type status reason createdDate createdBy",
     (err, annualLeave) => {
       if (err) {
         res.status(500).send({ message: err });
@@ -61,13 +52,26 @@ exports.getAll = (req, res) => {
 };
 
 exports.getAnnualLeave = (req, res) => {
-  const d = new Date();
   AnnualLeave.find({ _id: req.params.id }, (err, annualLeave) => {
     if (err) {
       res.status(500).send({ message: err });
     }
     res.send(annualLeave);
   });
+};
+
+exports.getAnnualLeaveByUserId = (req, res) => {
+  AnnualLeave.find(
+    { userId: req.params.userId },
+    "userId fullName teamName teamLeader fromDate toDate type status reason createdDate createdBy",
+    (err, annualLeave) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+      res.send({ annualLeave: annualLeave, total: annualLeave.length });
+    }
+  );
 };
 
 exports.updateAnnualLeave = (req, res) => {
@@ -90,6 +94,6 @@ exports.deleteAnnualLeave = (req, res) => {
       res.status(500).send({ message: err });
       return;
     }
-    res.send({ message: "AnnualLeave was deleted successfully" });
+    res.send({ message: "Annual Leave was deleted successfully" });
   });
 };

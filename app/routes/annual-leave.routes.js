@@ -15,8 +15,8 @@ module.exports = function (app) {
    * /annual-leave:
    *    post:
    *      tags:
-   *        - Annual-leave
-   *      summary: Add a new annualLeave
+   *        - Annual leave
+   *      summary: Add a new Annual Leave
    *      requestBody:
    *        required: true
    *        content:
@@ -41,7 +41,7 @@ module.exports = function (app) {
    *      security:
    *        - JWT: []
    *      responses:
-   *        200:
+   *        201:
    *          description: Receive back annualLeaveId.
    *
    */
@@ -52,8 +52,8 @@ module.exports = function (app) {
    * /annual-leave:
    *    get:
    *      tags:
-   *        - Annual-leave
-   *      summary: Get all annualLeave
+   *        - Annual leave
+   *      summary: Get all Annual Leave
    *      security:
    *        - JWT: []
    *      responses:
@@ -67,8 +67,8 @@ module.exports = function (app) {
    * /annual-leave/{id}:
    *    get:
    *      tags:
-   *        - Annual-leave
-   *      summary: Get annualLeave by id
+   *        - Annual leave
+   *      summary: Get Annual Leave by id
    *      parameters:
    *        - name: id
    *          in: path
@@ -88,11 +88,35 @@ module.exports = function (app) {
 
   /**
    * @swagger
-   * /annual-leave/{id}:
-   *    post:
+   * /annual-leaves/get-by-userId/{userId}:
+   *    get:
    *      tags:
-   *        - Annual-leave
-   *      summary: Update annualLeave by id
+   *        - Annual leave
+   *      summary: Get Annual Leave by userId
+   *      parameters:
+   *        - name: userId
+   *          in: path
+   *          required: true
+   *          type: string
+   *      security:
+   *        - JWT: []
+   *      responses:
+   *        200:
+   *          description: Receive back annualLeaveId.
+   */
+  app.get(
+    "/annual-leaves/get-by-userId/:userId",
+    [authJwt.verifyToken],
+    controller.getAnnualLeaveByUserId
+  );
+
+  /**
+   * @swagger
+   * /annual-leave/{id}:
+   *    put:
+   *      tags:
+   *        - Annual leave
+   *      summary: Update Annual Leave by id
    *      parameters:
    *        - name: id
    *          in: path
@@ -113,9 +137,9 @@ module.exports = function (app) {
    *        200:
    *          description: Receive back annualLeaveId.
    */
-  app.post(
+  app.put(
     "/annual-leave/:id",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken], // authJwt.isAdmin them vao bi loi
     controller.updateAnnualLeave
   );
 
@@ -124,8 +148,8 @@ module.exports = function (app) {
    * /annual-leave/{id}:
    *    delete:
    *      tags:
-   *        - Annual-leave
-   *      summary: Delete a annualLeave by id
+   *        - Annual leave
+   *      summary: Delete a Annual Leave by id
    *      parameters:
    *        - name: id
    *          in: path
@@ -137,7 +161,7 @@ module.exports = function (app) {
    *        400:
    *          description: Invalid Id.
    *        404:
-   *          descriptionL: AnnualLeave not found.
+   *          descriptionL: Annual Leave not found.
    */
   app.delete(
     "/annual-leave/:id",
