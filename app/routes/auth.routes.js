@@ -48,7 +48,7 @@ module.exports = function (app) {
   /**
    * @swagger
    * /auth/forgot-password:
-   *    put:
+   *    post:
    *      tags:
    *        - Authentication
    *      summary: Fill email to get reset password link
@@ -65,12 +65,12 @@ module.exports = function (app) {
    *        200:
    *          description: Receive email has link to reset password.
    */
-  app.put("/auth/forgot-password", controller.forgotPassword)
+  app.post("/auth/forgot-password", controller.forgotPassword)
 
   /**
    * @swagger
    * /auth/reset-password/{token}:
-   *    post:
+   *    put:
    *      tags:
    *        - Authentication
    *      summary: Using link with token to reset password.
@@ -92,5 +92,5 @@ module.exports = function (app) {
    *        200:
    *          description: Change password successfully
    */
-  app.post("/auth/reset-password/:token", controller.resetPassword)
+  app.put("/auth/reset-password/:token", controller.resetPassword)
 }
