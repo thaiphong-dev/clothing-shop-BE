@@ -67,18 +67,27 @@ module.exports = function (app) {
 
   /**
    * @swagger
-   * /users:
+   * /users/get-all:
    *    get:
    *      tags:
    *        - Users
    *      summary: Get all users
+   *      parameters:
+   *        - name: pageSize
+   *          in: query
+   *          required: false
+   *          type: string
+   *        - name: pageNumber
+   *          in: query
+   *          required: false
+   *          type: string
    *      security:
    *        - JWT: []
    *      responses:
    *        200:
    *          description: Receive back a user list.
    */
-  app.get("/users", controller.getAll); // [authJwt.verifyToken, authJwt.isAdmin],
+  app.get("/users/get-all", controller.getAll); // [authJwt.verifyToken, authJwt.isAdmin],
 
   /**
    * @swagger

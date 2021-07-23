@@ -82,9 +82,11 @@ exports.addUser = (req, res) => {
 
 exports.getAll = (req, res, next) => {
   // add pagiantion
-  let perPage = 2;
-  let page = req.query.page;
-  if (!page) perPage = 0;
+  let page = parseInt(req.query.pageNumber);
+  let perPage = parseInt(req.query.pageSize);
+  if (page <= 0) page = 1;
+  if (perPage < 0) perPage = 0;
+
   User.find({}, "fullname username email roles")
     .skip(perPage * page - perPage)
     .limit(perPage)
