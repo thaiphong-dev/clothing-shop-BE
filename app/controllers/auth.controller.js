@@ -1,10 +1,14 @@
 const config = require("../config/auth.config");
 const db = require("../models");
+const sendEmailConfig = require("../config/sendEmail.config")
+const sendEmail = require("../util/sendEmail")
+
 const User = db.user;
 const Role = db.role;
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
+const { json } = require("body-parser");
 
 exports.signup = (req, res) => {
   const user = new User({
@@ -148,5 +152,55 @@ exports.refreshToken = (req, res) => {
     return res.status(200).send(response);
   } catch (e) {
     return res.status(401).send({ message: "Invalid refresh token" });
+  }
+}
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user =  await User.findOne({ email }, (err, user) => {
+      if( err || !user) {
+        return res.status(400).send({ error: "User with this email doesn't exist!" })
+      }  
+    });
+    const token = jwt.sign({ id: user._id }, sendEmailConfig.reset_password_key, { expiresIn: '30m'})
+
+    sendEmail(
+      email,
+      'anh.ha@alpaca.vn',
+      'Reset Password Link',
+      `
+      <h2>Please click on the given link to reset your password</h2>
+      <p>${sendEmailConfig.local_url}/auth/reset-password/${token}</p>
+      `
+    );
+    return res.status(200).send({ message: 'Email has been sent, kindly follow the instruction' });
+  } catch (e) {
+    return json("Something wrong")
+  }
+},
+
+exports.resetPassword = async (req, res, next) => {
+  try {
+    const { password } = req.body
+    const { token } = req.params
+    const hashed = bcrypt.hashSync(password, 8)
+
+    if(token) {
+      jwt.verify(token, sendEmailConfig.reset_password_key, (err, decoded) => {
+        if (err) {
+          return res.status(401).json({ error: "Incorrect link or it is expired" });
+        }
+        req.userId = decoded.id
+      })
+    }
+
+    await User.findOneAndUpdate( req.userId, {password: hashed} , { useFindAndModify:false }, (err, user) => {
+      if( err || !user) 
+      return res.status(400).json({ error: "Password change failed. Please check your email" })
+    })
+    return res.status(200).json({ message: "Your password has been changed" })
+  } catch(e) {
+    return json("Something wrong")
   }
 }
