@@ -96,16 +96,6 @@ exports.getAll = (req, res, next) => {
     });
 };
 
-// exports.getAll = (req, res) => {
-//   User.find({}, "fullname username email roles", (err, users) => {
-//     if (err) {
-//       res.status(500).send({ message: err });
-//       return;
-//     }
-//     res.send({ users: users, total: users.length });
-//   });
-// };
-
 exports.getUser = (req, res) => {
   User.find({ _id: req.params.id }, (err, user) => {
     if (err) {
