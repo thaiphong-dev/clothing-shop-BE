@@ -77,6 +77,7 @@ require("./app/routes/user.routes")(app);
 require("./app/routes/role.routes")(app);
 require("./app/routes/contract.routes")(app);
 require("./app/routes/annual-leave.routes")(app);
+require("./app/routes/menu.routes")(app);
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

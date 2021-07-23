@@ -9,4 +9,5 @@ db.user = require("./user.model");
 db.role = require("./role.model");
 db.contract = require("./contract.model");
 db.annualLeave = require("./annual-leave.model");
+db.menu = require("./menu.model");
 module.exports = db;
