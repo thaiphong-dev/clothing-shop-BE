@@ -80,20 +80,14 @@ exports.addUser = (req, res) => {
   });
 };
 
-exports.getAll = (req, res, next) => {
-  // add pagiantion
-  let perPage = 2;
-  let page = req.query.page;
-  if (!page) perPage = 0;
-  User.find({}, "fullname username email roles")
-    .skip(perPage * page - perPage)
-    .limit(perPage)
-    .exec((err, users) => {
-      User.countDocuments((err, count) => {
-        if (err) return next(err);
-        res.send({ users: users, total: users.length });
-      });
-    });
+exports.getAll = (req, res) => {
+  User.find({}, "fullname username email roles", (err, users) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+    res.send({ users: users, total: users.length });
+  });
 };
 
 exports.getUser = (req, res) => {
