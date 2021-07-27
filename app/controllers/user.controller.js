@@ -87,7 +87,7 @@ exports.getAll = (req, res, next) => {
   if (page <= 0) page = 1;
   if (perPage < 0) perPage = 0;
 
-  User.find({}, "fullName username email roles status")
+  User.find({}, "avatar fullName username email roles status")
     .skip(perPage * page - perPage)
     .limit(perPage)
     .exec((err, users) => {

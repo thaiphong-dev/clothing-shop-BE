@@ -87,7 +87,7 @@ module.exports = function (app) {
    *        200:
    *          description: Receive back a user list.
    */
-  app.get("/users/get-all", controller.getAll); // [authJwt.verifyToken, authJwt.isAdmin],
+  app.get("/users/get-all", [authJwt.verifyToken], controller.getAll); //  authJwt.isAdmin],
 
   /**
    * @swagger
