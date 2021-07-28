@@ -87,8 +87,30 @@ module.exports = function (app) {
    *        200:
    *          description: Receive back a user list.
    */
-  app.get("/users/get-all", [authJwt.verifyToken], controller.getAll); //  authJwt.isAdmin],
+  app.get("/users/get-all", controller.getAll); //  authJwt.isAdmin],[authJwt.verifyToken],
 
+  /**
+   * @swagger
+   * /users/search:
+   *    get:
+   *      tags:
+   *        - Users
+   *      summary: Get users by status
+   *      parameters:
+   *        - name: status
+   *          in: query
+   *          required: false
+   *          type: string
+   *        - name: fullname
+   *          in: query
+   *          type: string
+   *      security:
+   *        - JWT: []
+   *      responses:
+   *        200:
+   *          description: Receive back a user list.
+   */
+  app.get("/users/search", controller.getAll); //  authJwt.isAdmin], [authJwt.verifyToken],
   /**
    * @swagger
    * /users/{id}:

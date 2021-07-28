@@ -108,6 +108,61 @@ exports.getUser = (req, res) => {
   });
 };
 
+exports.getUserByRole = (req, res) => {
+  User.find({ roles: [req.query.roles] }, (err, user) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+    res.send(user);
+  });
+};
+
+exports.getUserByStatus = (req, res) => {
+  User.find({ status: parseInt(req.query.status) }, (err, user) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+    res.send(user);
+  });
+};
+// tim kiem theo ten
+// User.createIndexes({ fullname: "text" });
+User.ensureIndexes({ fullname: "text" });
+exports.getUserByName = (req, res) => {
+  User.find({ $text: { $search: "p" } }, (err, user) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+    res.send(user);
+  });
+};
+exports.searchUser = (req, res) => {
+  User.find(
+    {
+      $or: [
+        {
+          $and: [
+            { status: parseInt(req.query.status) },
+            { roles: [req.query.roles] },
+          ],
+        },
+        // { status: parseInt(req.query.status) },
+        // { roles: [req.query.roles] },
+      ],
+    },
+    (err, user) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+      res.send({ user: user, total: user.length });
+    }
+  );
+};
+
 exports.updateUser = (req, res) => {
   User.findOneAndUpdate(
     { _id: req.params.id },
