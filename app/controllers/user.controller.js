@@ -128,8 +128,8 @@ exports.getUserByStatus = (req, res) => {
   });
 };
 // tim kiem theo ten
-// User.createIndexes({ fullname: "text" });
-User.ensureIndexes({ fullname: "text" });
+User.createIndexes({ fullname: "text" });
+// User.ensureIndexes({ fullname: "text" });
 exports.getUserByName = (req, res) => {
   User.find({ $text: { $search: "p" } }, (err, user) => {
     if (err) {
@@ -149,7 +149,7 @@ exports.searchUser = (req, res) => {
             { roles: [req.query.roles] },
           ],
         },
-        // { status: parseInt(req.query.status) },
+        // { status: parseInt(req.query.status) }, //2
         // { roles: [req.query.roles] },
       ],
     },
