@@ -57,8 +57,8 @@ module.exports = function (app) {
   app.post(
     "/users",
     [
-      // authJwt.verifyToken,
-      // authJwt.isAdmin,
+      authJwt.verifyToken,
+      authJwt.isAdmin,
       verifySignUp.checkDuplicateUsernameOrEmail,
       verifySignUp.checkRolesExisted,
     ],
@@ -87,7 +87,7 @@ module.exports = function (app) {
    *        200:
    *          description: Receive back a user list.
    */
-  app.get("/users/get-all", controller.getAll); //  authJwt.isAdmin],[authJwt.verifyToken],
+  app.get("/users/get-all", [authJwt.verifyToken], controller.getAll);
 
   /**
    * @swagger
@@ -110,7 +110,7 @@ module.exports = function (app) {
    *        200:
    *          description: Receive back a user list.
    */
-  app.get("/users/search", [authJwt.verifyToken], controller.searchUser); //  authJwt.isAdmin], [authJwt.verifyToken],
+  app.get("/users/search", [authJwt.verifyToken], controller.searchUser);
   /**
    * @swagger
    * /users/{id}:

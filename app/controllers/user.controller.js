@@ -30,12 +30,13 @@ exports.addUser = (req, res) => {
     status: req.body.status || 2,
     avatar: req.body.avatar || "",
     country: req.body.country,
-    // [role[0].ref]: req.body.role,
+    roles: req.body.role || "",
     password: bcrypt.hashSync(req.body.password, 8),
   });
 
   user.save((err, user) => {
     if (err) {
+      console.log(err);
       res.status(500).send({ message: err });
       return;
     }
@@ -69,7 +70,7 @@ exports.addUser = (req, res) => {
           return;
         }
 
-        // user.roles = [role._id];
+        // user.roles = [role._id];  // để thì bị bad request vì chưa hiểu cách để thêm roleid vào
         user.save((err) => {
           if (err) {
             res.status(500).send({ message: err });
@@ -117,26 +118,6 @@ exports.getAll = (req, res, next) => {
 
 exports.getUser = (req, res) => {
   User.find({ _id: req.params.id }, (err, user) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
-    res.send(user);
-  });
-};
-
-exports.getUserByRole = (req, res) => {
-  User.find({ roles: [req.query.roles] }, (err, user) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
-    res.send(user);
-  });
-};
-
-exports.getUserByStatus = (req, res) => {
-  User.find({ status: parseInt(req.query.status) }, (err, user) => {
     if (err) {
       res.status(500).send({ message: err });
       return;
