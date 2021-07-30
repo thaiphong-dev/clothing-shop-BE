@@ -14,6 +14,14 @@ const User = mongoose.model(
         ref: "Role",
       },
     ],
+    country: String,
+    address: String,
+    contact: String,
+    language: String,
+    dob: Date,
+    sex: String,
+    avatar: String,
+    status: Number,
   })
 );
 

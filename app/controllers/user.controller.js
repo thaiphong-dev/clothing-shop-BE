@@ -25,9 +25,12 @@ exports.addUser = (req, res) => {
     fullname: req.body.fullname,
     username: req.body.username,
     email: req.body.email,
-    // contact: req.body.contact,
-    // status: req.body.status,
-    // avatar: req.body.avatar,
+
+    contact: req.body.contact,
+    status: req.body.status || 2,
+    avatar: req.body.avatar || "",
+    country: req.body.country,
+    // [role[0].ref]: req.body.role,
     password: bcrypt.hashSync(req.body.password, 8),
   });
 
@@ -66,7 +69,7 @@ exports.addUser = (req, res) => {
           return;
         }
 
-        user.roles = [role._id];
+        // user.roles = [role._id];
         user.save((err) => {
           if (err) {
             res.status(500).send({ message: err });
