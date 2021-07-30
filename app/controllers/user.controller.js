@@ -84,18 +84,32 @@ exports.getAll = (req, res, next) => {
   // add pagiantion
   let page = parseInt(req.query.pageNumber);
   let perPage = parseInt(req.query.pageSize);
+  let searchTitle = req.query.title || "";
+
   if (page <= 0) page = 1;
   if (perPage < 0) perPage = 0;
 
-  User.find({}, "avatar fullName username email roles status")
-    .skip(perPage * page - perPage)
-    .limit(perPage)
-    .exec((err, users) => {
-      User.countDocuments((err, count) => {
-        if (err) return next(err);
-        res.send({ users: users, total: users.length });
+  if (searchTitle != "") {
+    User.find({ fullname: { $regex: searchTitle } })
+      .skip(perPage * page - perPage)
+      .limit(perPage)
+      .exec((err, users) => {
+        User.countDocuments((err, count) => {
+          if (err) return next(err);
+          res.send({ users: users, total: users.length });
+        });
       });
-    });
+  } else if (searchTitle == "") {
+    User.find()
+      .skip(perPage * page - perPage)
+      .limit(perPage)
+      .exec((err, users) => {
+        User.countDocuments((err, count) => {
+          if (err) return next(err);
+          res.send({ users: users, total: users.length });
+        });
+      });
+  }
 };
 
 exports.getUser = (req, res) => {
@@ -127,40 +141,41 @@ exports.getUserByStatus = (req, res) => {
     res.send(user);
   });
 };
-// tim kiem theo ten
-User.createIndexes({ fullname: "text" });
-// User.ensureIndexes({ fullname: "text" });
-exports.getUserByName = (req, res) => {
-  User.find({ $text: { $search: "p" } }, (err, user) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
-    res.send(user);
-  });
-};
+
 exports.searchUser = (req, res) => {
-  User.find(
-    {
-      $or: [
-        {
-          $and: [
-            { status: parseInt(req.query.status) },
-            { roles: [req.query.roles] },
-          ],
-        },
-        // { status: parseInt(req.query.status) }, //2
-        // { roles: [req.query.roles] },
-      ],
-    },
-    (err, user) => {
+  let reqStatus = req.body[0].value;
+  let reqRole = req.body[1].value;
+
+  if (reqStatus === 0 && reqRole != "") {
+    User.find({ roles: reqRole }, (err, user) => {
       if (err) {
         res.status(500).send({ message: err });
         return;
       }
       res.send({ user: user, total: user.length });
-    }
-  );
+    });
+  } else if (reqStatus != 0 && reqRole == "") {
+    User.find({ status: parseInt(reqStatus) }, (err, user) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+      res.send({ user: user, total: user.length });
+    });
+  } else if (reqStatus != 0 && reqRole != "") {
+    User.find(
+      {
+        $and: [{ status: parseInt(reqStatus) }, { roles: reqRole }],
+      },
+      (err, user) => {
+        if (err) {
+          res.status(500).send({ message: err });
+          return;
+        }
+        res.send({ user: user, total: user.length });
+      }
+    );
+  }
 };
 
 exports.updateUser = (req, res) => {
