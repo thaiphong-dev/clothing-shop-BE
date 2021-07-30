@@ -146,7 +146,7 @@ module.exports = function (app) {
    *      requestBody:
    *        required: true
    *        content:
-   *          application/json:
+   *          application/:
    *            schema:
    *              type: object
    *              properties:

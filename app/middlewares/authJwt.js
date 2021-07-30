@@ -5,12 +5,12 @@ const User = db.user;
 const Role = db.role;
 
 verifyToken = (req, res, next) => {
-  const bearerHeader = req.headers['authorization'];
+  const bearerHeader = req.headers["authorization"];
 
   if (bearerHeader) {
-    const bearer = bearerHeader.split(' ');
+    const bearer = bearerHeader.split(" ");
     const token = bearer[1];
-
+    console.log("day la token", token);
     if (!token) {
       return res.status(403).send({ message: "No token provided!" });
     }
@@ -36,7 +36,7 @@ isAdmin = (req, res, next) => {
 
     Role.find(
       {
-        _id: { $in: user.roles }
+        _id: { $in: user.roles },
       },
       (err, roles) => {
         if (err) {
@@ -67,7 +67,7 @@ isModerator = (req, res, next) => {
 
     Role.find(
       {
-        _id: { $in: user.roles }
+        _id: { $in: user.roles },
       },
       (err, roles) => {
         if (err) {
@@ -92,6 +92,6 @@ isModerator = (req, res, next) => {
 const authJwt = {
   verifyToken,
   isAdmin,
-  isModerator
+  isModerator,
 };
 module.exports = authJwt;
