@@ -30,7 +30,7 @@ exports.addUser = (req, res) => {
     status: req.body.status || 2,
     avatar: req.body.avatar || "",
     country: req.body.country,
-    roles: req.body.role || "",
+
     password: bcrypt.hashSync(req.body.password, 8),
   });
 
