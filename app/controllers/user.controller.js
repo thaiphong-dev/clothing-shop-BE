@@ -86,17 +86,17 @@ exports.addUser = (req, res) => {
 
 exports.getAll = (req, res, next) => {
   // add pagiantion
-  let page = parseInt(req.query.pageNumber);
-  let perPage = parseInt(req.query.pageSize);
+  let pageNumber = parseInt(req.query.pageNumber);
+  let pageSize = parseInt(req.query.pageSize);
   let searchTitle = req.query.title || "";
 
-  if (page <= 0) page = 1;
-  if (perPage < 0) perPage = 0;
+  if (pageNumber < 0) pageNumber = 0;
+  if (pageSize <= 0) perPage = 10;
 
   if (searchTitle != "") {
     User.find({ fullname: { $regex: searchTitle } })
-      .skip(perPage * page - perPage)
-      .limit(perPage)
+      .skip(pageSize * pageNumber)
+      .limit(pageSize)
       .exec((err, users) => {
         User.countDocuments((err, count) => {
           if (err) return next(err);
@@ -105,8 +105,8 @@ exports.getAll = (req, res, next) => {
       });
   } else if (searchTitle == "") {
     User.find()
-      .skip(perPage * page - perPage)
-      .limit(perPage)
+      .skip(pageSize * pageNumber)
+      .limit(pageSize)
       .exec((err, users) => {
         User.countDocuments((err, count) => {
           if (err) return next(err);
@@ -179,7 +179,7 @@ exports.updateUser = (req, res) => {
 };
 
 exports.deleteUser = (req, res) => {
-  User.findOneAndDelete({ _id: req.params.id }, (err) => {
+  User.findOneAndDelete({ _id: req.query.id }, (err) => {
     if (err) {
       res.status(500).send({ message: err });
       return;

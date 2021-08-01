@@ -73,11 +73,11 @@ module.exports = function (app) {
    *        - Users
    *      summary: Get all users
    *      parameters:
-   *        - name: pageSize
+   *        - name: pageNumber
    *          in: query
    *          required: false
    *          type: string
-   *        - name: pageNumber
+   *        - name: pageSize
    *          in: query
    *          required: false
    *          type: string
@@ -162,14 +162,14 @@ module.exports = function (app) {
 
   /**
    * @swagger
-   * /users/{id}:
+   * /users/:
    *    delete:
    *      tags:
    *        - Users
    *      summary: Delete a user by id
    *      parameters:
    *        - name: id
-   *          in: path
+   *          in: query
    *          required: true
    *          type: string
    *      security:
@@ -181,7 +181,7 @@ module.exports = function (app) {
    *          description: User not found.
    */
   app.delete(
-    "/users/:id",
+    "/users",
     [authJwt.verifyToken, authJwt.isAdmin],
     controller.deleteUser
   );
