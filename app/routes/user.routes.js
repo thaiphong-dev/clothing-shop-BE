@@ -67,12 +67,16 @@ module.exports = function (app) {
 
   /**
    * @swagger
-   * /users/get-all:
+   * /users:
    *    get:
    *      tags:
    *        - Users
    *      summary: Get all users
    *      parameters:
+   *        - name: keyword
+   *          in: query
+   *          required: false
+   *          type: string
    *        - name: pageNumber
    *          in: query
    *          required: false
@@ -87,7 +91,7 @@ module.exports = function (app) {
    *        200:
    *          description: Receive back a user list.
    */
-  app.get("/users/get-all", [authJwt.verifyToken], controller.getAll);
+  app.get("/users", [authJwt.verifyToken], controller.getAll);
 
   /**
    * @swagger
@@ -134,7 +138,7 @@ module.exports = function (app) {
   /**
    * @swagger
    * /users/{id}:
-   *    post:
+   *    put:
    *      tags:
    *        - Users
    *      summary: Update user by id
@@ -158,18 +162,18 @@ module.exports = function (app) {
    *        200:
    *          description: Receive back userId.
    */
-  app.post("/users/:id", [authJwt.verifyToken], controller.getUser);
+  app.put("/users/:id", [authJwt.verifyToken], controller.getUser);
 
   /**
    * @swagger
-   * /users/:
+   * /users/{id}:
    *    delete:
    *      tags:
    *        - Users
    *      summary: Delete a user by id
    *      parameters:
    *        - name: id
-   *          in: query
+   *          in: path
    *          required: true
    *          type: string
    *      security:
@@ -181,7 +185,7 @@ module.exports = function (app) {
    *          description: User not found.
    */
   app.delete(
-    "/users",
+    "/users/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     controller.deleteUser
   );

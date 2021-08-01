@@ -36,7 +36,6 @@ exports.addUser = (req, res) => {
 
   user.save((err, user) => {
     if (err) {
-      console.log(err);
       res.status(500).send({ message: err });
       return;
     }
@@ -88,32 +87,20 @@ exports.getAll = (req, res, next) => {
   // add pagiantion
   let pageNumber = parseInt(req.query.pageNumber);
   let pageSize = parseInt(req.query.pageSize);
-  let searchTitle = req.query.title || "";
+  let keyword = req.query.keyword || "";
 
   if (pageNumber < 0) pageNumber = 0;
-  if (pageSize <= 0) perPage = 10;
+  if (pageSize <= 0 || !pageSize) pageSize = 0;
 
-  if (searchTitle != "") {
-    User.find({ fullname: { $regex: searchTitle } })
-      .skip(pageSize * pageNumber)
-      .limit(pageSize)
-      .exec((err, users) => {
-        User.countDocuments((err, count) => {
-          if (err) return next(err);
-          res.send({ users: users, total: users.length });
-        });
+  User.find(keyword !== "" ? { fullname: { $regex: keyword } } : null)
+    .skip(pageSize * pageNumber)
+    .limit(pageSize)
+    .exec((err, users) => {
+      User.countDocuments((err, count) => {
+        if (err) return next(err);
+        res.send({ users: users, total: users.length });
       });
-  } else if (searchTitle == "") {
-    User.find()
-      .skip(pageSize * pageNumber)
-      .limit(pageSize)
-      .exec((err, users) => {
-        User.countDocuments((err, count) => {
-          if (err) return next(err);
-          res.send({ users: users, total: users.length });
-        });
-      });
-  }
+    });
 };
 
 exports.getUser = (req, res) => {
@@ -179,7 +166,7 @@ exports.updateUser = (req, res) => {
 };
 
 exports.deleteUser = (req, res) => {
-  User.findOneAndDelete({ _id: req.query.id }, (err) => {
+  User.findOneAndDelete({ _id: req.params.id }, (err) => {
     if (err) {
       res.status(500).send({ message: err });
       return;

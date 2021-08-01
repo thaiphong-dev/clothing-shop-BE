@@ -10,7 +10,6 @@ verifyToken = (req, res, next) => {
   if (bearerHeader) {
     const bearer = bearerHeader.split(" ");
     const token = bearer[1];
-    console.log("day la token", token);
     if (!token) {
       return res.status(403).send({ message: "No token provided!" });
     }
