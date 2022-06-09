@@ -1,5 +1,5 @@
 const { authJwt, verifySignUp } = require("../middlewares");
-const controller = require("../controllers/user.controller");
+const controller = require("../controllers/order.controller");
 
 module.exports = function (app) {
   app.use(function (req, res, next) {
@@ -10,29 +10,13 @@ module.exports = function (app) {
     next();
   });
 
-  app.get("/test/all", controller.allAccess);
-
-  app.get("/test/user", [authJwt.verifyToken], controller.userBoard);
-
-  app.get(
-    "/test/mod",
-    [authJwt.verifyToken, authJwt.isModerator],
-    controller.moderatorBoard
-  );
-
-  app.get(
-    "/test/admin",
-    [authJwt.verifyToken, authJwt.isAdmin],
-    controller.adminBoard
-  );
-
   /**
    * @swagger
-   * /users:
+   * /order:
    *    post:
    *      tags:
-   *        - Users
-   *      summary: Add a new user
+   *        - Order
+   *      summary: Add a new Order
    *      requestBody:
    *        required: true
    *        content:
@@ -40,36 +24,39 @@ module.exports = function (app) {
    *            schema:
    *              type: object
    *              properties:
-   *                email:
+   *                userId:
    *                  type: string
-   *                fullname:
-   *                  type: string
-   *                password:
-   *                  type: string
-   *                username:
-   *                  type: string
+   *                detail:
+   *                  type: array
+   *                  items:
+   *                    type: object
+   *                    properties:
+   *                      productId:
+   *                        type: string
+   *                      price:
+   *                        type: number
+   *                      amount:
+   *                        type: number
+   *                      totalPrice:
+   *                        type: number
+   *                status:
+   *                  type: number
    *      security:
    *        - JWT: []
    *      responses:
-   *        200:
-   *          description: Receive back userId.
+   *        201:
+   *          description: Receive back orderId.
+   *
    */
-  app.post(
-    "/users",
-    [
-      verifySignUp.checkDuplicateUsernameOrEmail,
-      verifySignUp.checkRolesExisted,
-    ],
-    controller.addUser
-  );
+  app.post("/order", [authJwt.verifyToken], controller.addOrder);
 
   /**
    * @swagger
-   * /users:
+   * /order:
    *    get:
    *      tags:
-   *        - Users
-   *      summary: Get all users
+   *        - Order
+   *      summary: Get all Order
    *      parameters:
    *        - name: keyword
    *          in: query
@@ -87,39 +74,17 @@ module.exports = function (app) {
    *        - JWT: []
    *      responses:
    *        200:
-   *          description: Receive back a user list.
+   *          description: Receive back a order list.
    */
-  app.get("/users", [authJwt.verifyToken], controller.getAll);
+  app.get("/order", [authJwt.verifyToken], controller.getAll);
 
   /**
    * @swagger
-   * /users/search:
+   * /order/{id}:
    *    get:
    *      tags:
-   *        - Users
-   *      summary: Get users by status
-   *      parameters:
-   *        - name: status
-   *          in: query
-   *          required: false
-   *          type: string
-   *        - name: fullname
-   *          in: query
-   *          type: string
-   *      security:
-   *        - JWT: []
-   *      responses:
-   *        200:
-   *          description: Receive back a user list.
-   */
-  app.get("/users/search", [authJwt.verifyToken], controller.searchUser);
-  /**
-   * @swagger
-   * /users/{id}:
-   *    get:
-   *      tags:
-   *        - Users
-   *      summary: Get user by id
+   *        - Order
+   *      summary: Get Order by id
    *      parameters:
    *        - name: id
    *          in: path
@@ -129,17 +94,41 @@ module.exports = function (app) {
    *        - JWT: []
    *      responses:
    *        200:
-   *          description: Receive back userId.
+   *          description: Receive back annualLeaveId.
    */
-  app.get("/users/:id", [authJwt.verifyToken], controller.getUser);
+  app.get("/order/:id", [authJwt.verifyToken], controller.getOrder);
 
   /**
    * @swagger
-   * /users/{id}:
+   * /order/get-by-userId/{userId}:
+   *    get:
+   *      tags:
+   *        - Order
+   *      summary: Get Annual Leave by userId
+   *      parameters:
+   *        - name: userId
+   *          in: path
+   *          required: true
+   *          type: string
+   *      security:
+   *        - JWT: []
+   *      responses:
+   *        200:
+   *          description: Receive back orderId.
+   */
+   app.get(
+    "/order/get-by-userId/:userId",
+    [authJwt.verifyToken],
+    controller.getOrderByUserId
+  );
+
+  /**
+   * @swagger
+   * /order/{id}:
    *    put:
    *      tags:
-   *        - Users
-   *      summary: Update user by id
+   *        - Order
+   *      summary: Update Order by id
    *      parameters:
    *        - name: id
    *          in: path
@@ -148,27 +137,31 @@ module.exports = function (app) {
    *      requestBody:
    *        required: true
    *        content:
-   *          application/:
+   *          application/json:
    *            schema:
    *              type: object
    *              properties:
-   *                fullName:
-   *                  type: string
+   *                status:
+   *                  type: number
    *      security:
    *        - JWT: []
    *      responses:
    *        200:
-   *          description: Receive back userId.
+   *          description: Receive back orderId.
    */
-  app.put("/users/:id", [authJwt.verifyToken], controller.getUser);
+  app.put(
+    "/order/:id",
+    [authJwt.verifyToken], // authJwt.isAdmin
+    controller.updateOrder
+  );
 
   /**
    * @swagger
-   * /users/{id}:
+   * /order/{id}:
    *    delete:
    *      tags:
-   *        - Users
-   *      summary: Delete a user by id
+   *        - Order
+   *      summary: Delete a Order by id
    *      parameters:
    *        - name: id
    *          in: path
@@ -180,11 +173,7 @@ module.exports = function (app) {
    *        400:
    *          description: Invalid Id.
    *        404:
-   *          description: User not found.
+   *          descriptionL: Order not found.
    */
-  app.delete(
-    "/users/:id",
-    [authJwt.verifyToken, authJwt.isAdmin],
-    controller.deleteUser
-  );
+  app.delete("/order/:id", [authJwt.verifyToken], controller.deleteOrder);
 };

@@ -1,7 +1,7 @@
 const db = require("../models");
 const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config.js");
-const moment = require("moment");
+const moment = require("moment-timezone");
 const AnnualLeave = db.annualLeave;
 
 exports.addAnnualLeave = (req, res) => {
@@ -20,10 +20,11 @@ exports.addAnnualLeave = (req, res) => {
     fullName: req.body.fullName,
     teamName: req.body.teamName,
     teamLeader: req.body.teamLeader,
-    fromDate: moment.utc(req.body.fromDate, "YYYY-MM-DD"),
-    toDate: moment.utc(req.body.toDate, "YYYY-MM-DD"),
-    type: req.body.type,
-    status: "pending",
+    startDate: moment.utc(req.body.startDate, "YYYY-MM-DD"),
+    endDate: moment.utc(req.body.endDate, "YYYY-MM-DD"),
+    type: req.body.typeOfLeave,
+    allDay: req.body.allDay,
+    status: 0,
     reason: req.body.reason,
     createdDate: moment.utc(),
     createdBy: req.userId,
@@ -37,18 +38,23 @@ exports.addAnnualLeave = (req, res) => {
   });
 };
 
-exports.getAll = (req, res) => {
-  AnnualLeave.find(
-    {},
-    "userId fullName teamName teamLeader fromDate toDate type status reason createdDate createdBy",
-    (err, annualLeave) => {
-      if (err) {
-        res.status(500).send({ message: err });
-        return;
-      }
-      res.send({ annualLeave: annualLeave, total: annualLeave.length });
-    }
-  );
+exports.getAll = (req, res, next) => {
+  let pageNumber = parseInt(req.query.pageNumber);
+  let pageSize = parseInt(req.query.pageSize);
+  let keyword = req.query.keyword || "";
+
+  if (pageNumber < 0) pageNumber = 0;
+  if (pageSize <= 0 || !pageSize) pageSize = 0;
+
+  AnnualLeave.find(keyword !== "" ? { fullName: { $regex: keyword } } : null)
+    .skip(pageSize * pageNumber)
+    .limit(pageSize)
+    .exec((err, annualLeave) => {
+      AnnualLeave.countDocuments((err, count) => {
+        if (err) return next(err);
+        res.send({ annualLeave: annualLeave, total: annualLeave.length });
+      });
+    });
 };
 
 exports.getAnnualLeave = (req, res) => {
@@ -75,9 +81,10 @@ exports.getAnnualLeaveByUserId = (req, res) => {
 };
 
 exports.updateAnnualLeave = (req, res) => {
+  let status = parseInt(req.body.status);
   AnnualLeave.findOneAndUpdate(
     { _id: req.params.id },
-    { status: req.body.status },
+    { status: status },
     (err, annualLeave) => {
       if (err) {
         res.status(500).send({ message: err });
