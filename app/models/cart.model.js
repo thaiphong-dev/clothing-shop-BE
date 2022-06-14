@@ -11,7 +11,6 @@ const Cart = mongoose.model(
             price: Number,
             amount: Number,
             totalPrice: Number,
-
         }
     ],
     cartDate: Date,

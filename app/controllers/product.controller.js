@@ -54,19 +54,6 @@ exports.getProduct = (req, res) => {
     });
 };
 
-//   exports.getAnnualLeaveByUserId = (req, res) => {
-//     AnnualLeave.find(
-//       { userId: req.params.userId },
-//       "userId fullName teamName teamLeader fromDate toDate type status reason createdDate createdBy",
-//       (err, annualLeave) => {
-//         if (err) {
-//           res.status(500).send({ message: err });
-//           return;
-//         }
-//         res.send({ annualLeave: annualLeave, total: annualLeave.length });
-//       }
-//     );
-//   };
 
 exports.updateProduct = (req, res) => {
     let status = parseInt(req.body.status);
@@ -87,7 +74,7 @@ exports.updateProduct = (req, res) => {
                 res.status(500).send({ message: err });
                 return;
             }
-            res.send(product._id);
+            res.send("Product was updated successfully");
         }
     );
 };

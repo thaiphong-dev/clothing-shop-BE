@@ -141,7 +141,7 @@ module.exports = function (app) {
   /**
    * @swagger
    * /order/{id}:
-   *    put:
+   *    post:
    *      tags:
    *        - Order
    *      summary: Update Order by id
@@ -157,15 +157,26 @@ module.exports = function (app) {
    *            schema:
    *              type: object
    *              properties:
-   *                status:
-   *                  type: number
+   *                detail:
+   *                  type: array
+   *                  items:
+   *                    type: object
+   *                    properties:
+   *                      productId:
+   *                        type: string
+   *                      price:
+   *                        type: number
+   *                      amount:
+   *                        type: number
+   *                      totalPrice:
+   *                        type: number
    *      security:
    *        - JWT: []
    *      responses:
    *        200:
    *          description: Receive back orderId.
    */
-  app.put(
+  app.post(
     "/order/:id",
     [authJwt.verifyToken], // authJwt.isAdmin
     controller.updateOrder

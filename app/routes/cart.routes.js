@@ -125,7 +125,7 @@ module.exports = function (app) {
   /**
    * @swagger
    * /cart/{id}:
-   *    put:
+   *    post:
    *      tags:
    *        - Cart
    *      summary: Update Cart by id
@@ -149,7 +149,7 @@ module.exports = function (app) {
    *        200:
    *          description: Receive back cartId.
    */
-  app.put(
+  app.post(
     "/cart/:id",
     [authJwt.verifyToken], // authJwt.isAdmin
     controller.updateCart

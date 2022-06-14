@@ -49,6 +49,7 @@ exports.getAll = (req, res, next) => {
 };
 
 exports.getOrder = (req, res) => {
+
   Order.find({ _id: req.params.id }, (err, order) => {
     if (err) {
       res.status(500).send({ message: err });
@@ -58,15 +59,14 @@ exports.getOrder = (req, res) => {
 };
 
   exports.getOrderByUserId = (req, res) => {
-    Order.find(
+    Order.findOne(
       { userId: req.params.userId },
-      "userId fullName email country address contact detail paymentAddress paymentDate paymentType status",
       (err, order) => {
         if (err) {
           res.status(500).send({ message: err });
           return;
         }
-        res.send({ order: order, total: order.length });
+        res.send(order);
       }
     );
   };
@@ -75,14 +75,14 @@ exports.updateOrder = (req, res) => {
   Order.findOneAndUpdate(
     { _id: req.params.id },
     {
-      status: status,
+      detail: req.body.detail,
     },
     (err, order) => {
       if (err) {
         res.status(500).send({ message: err });
         return;
       }
-      res.send(order._id);
+      res.send("Order was updated successfully");
     }
   );
 };
