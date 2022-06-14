@@ -167,7 +167,7 @@ exports.forgotPassword = async (req, res) => {
 
     sendEmail(
       email,
-      'anh.ha@alpaca.vn',
+      'tuthaiphong701@gmail.com',
       'Reset Password Link',
       `
       <h2>Please click on the given link to reset your password</h2>

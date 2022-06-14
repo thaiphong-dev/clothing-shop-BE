@@ -82,7 +82,7 @@ module.exports = function (app) {
    *        200:
    *          description: Receive back a product list.
    */
-  app.get("/product", [authJwt.verifyToken], controller.getAll);
+  app.get("/product", controller.getAll);
 
   /**
    * @swagger
@@ -102,7 +102,7 @@ module.exports = function (app) {
    *        200:
    *          description: Receive back annualLeaveId.
    */
-  app.get("/product/:id", [authJwt.verifyToken], controller.getProduct);
+  app.get("/product/:id", controller.getProduct);
 
   /**
    * @swagger
