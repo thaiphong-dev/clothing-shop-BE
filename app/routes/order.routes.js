@@ -26,6 +26,18 @@ module.exports = function (app) {
    *              properties:
    *                userId:
    *                  type: string
+   *                username:
+   *                  type: string
+   *                fullname:
+   *                  type: string
+   *                email:
+   *                  type: string
+   *                country:
+   *                  type: string
+   *                address:
+   *                  type: string
+   *                contact:
+   *                  type: string
    *                detail:
    *                  type: array
    *                  items:
@@ -39,6 +51,10 @@ module.exports = function (app) {
    *                        type: number
    *                      totalPrice:
    *                        type: number
+   *                paymentAddress:
+   *                  type: string
+   *                paymentType:
+   *                  type: string
    *                status:
    *                  type: number
    *      security:

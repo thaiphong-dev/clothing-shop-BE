@@ -1,16 +1,10 @@
 const mongoose = require("mongoose");
 
-const Card = mongoose.model(
-  "Card",
+const Cart = mongoose.model(
+  "Cart",
   new mongoose.Schema({
     // id: String,
     userId: String,
-    username: String,
-    fullname: String,
-    email: String,
-    country: String,
-    address: String,
-    contact: String,
     detail: [
         {
             productId: String,
@@ -20,11 +14,9 @@ const Card = mongoose.model(
 
         }
     ],
-    paymentAddress: String,
-    paymentDate: Date,
-    paymentType: String,
+    cartDate: Date,
     status: Number
   })
 );
 
-module.exports = Card;
+module.exports = Cart;

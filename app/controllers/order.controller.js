@@ -8,8 +8,16 @@ exports.addOrder = (req, res) => {
   const order = new Order({
     //   id: String,
     userId: req.body.userId,
+    username: req.body.username,
+    fullname: req.body.fullname,
+    email: req.body.email,
+    country: req.body.country,
+    address: req.body.address,
+    contact: req.body.contact,
     detail: req.body.detail,
-    orderDate: moment.utc(),
+    paymentAddress: req.body.paymentAddress,
+    paymentDate: moment.utc(),
+    paymentType: req.body.paymentType,
     status: req.body.status,
   });
   order.save((err, order) => {
@@ -52,7 +60,7 @@ exports.getOrder = (req, res) => {
   exports.getOrderByUserId = (req, res) => {
     Order.find(
       { userId: req.params.userId },
-      "userId detail orderDate status",
+      "userId fullName email country address contact detail paymentAddress paymentDate paymentType status",
       (err, order) => {
         if (err) {
           res.status(500).send({ message: err });
@@ -64,7 +72,6 @@ exports.getOrder = (req, res) => {
   };
 
 exports.updateOrder = (req, res) => {
-  let status = parseInt(req.body.status);
   Order.findOneAndUpdate(
     { _id: req.params.id },
     {

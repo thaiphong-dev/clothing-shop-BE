@@ -28,7 +28,7 @@ module.exports = function (app) {
 
   /**
    * @swagger
-   * /users:
+   * /signup:
    *    post:
    *      tags:
    *        - Users
@@ -55,7 +55,7 @@ module.exports = function (app) {
    *          description: Receive back userId.
    */
   app.post(
-    "/users",
+    "/signup",
     [
       verifySignUp.checkDuplicateUsernameOrEmail,
       verifySignUp.checkRolesExisted,

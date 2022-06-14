@@ -5,6 +5,12 @@ const Order = mongoose.model(
   new mongoose.Schema({
     // id: String,
     userId: String,
+    username: String,
+    fullname: String,
+    email: String,
+    country: String,
+    address: String,
+    contact: String,
     detail: [
         {
             productId: String,
@@ -14,7 +20,9 @@ const Order = mongoose.model(
 
         }
     ],
-    orderDate: Date,
+    paymentAddress: String,
+    paymentDate: Date,
+    paymentType: String,
     status: Number
   })
 );

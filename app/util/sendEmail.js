@@ -13,6 +13,7 @@ const sendEmail = (receiver, source, subject, content) => {
 
   sgMail
     .send(data, function (error, result){
+      console.log("data", data);
       if (error.response) {
         const {response} = error;
         const {body} = response;
