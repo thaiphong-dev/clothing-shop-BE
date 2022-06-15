@@ -33,6 +33,8 @@ module.exports = function (app) {
    *                    properties:
    *                      productId:
    *                        type: string
+   *                      name:
+   *                        type: string
    *                      price:
    *                        type: number
    *                      amount:
@@ -104,7 +106,7 @@ module.exports = function (app) {
    *    get:
    *      tags:
    *        - Cart
-   *      summary: Get Annual Leave by userId
+   *      summary: Get Cart by userId
    *      parameters:
    *        - name: userId
    *          in: path
@@ -125,7 +127,7 @@ module.exports = function (app) {
   /**
    * @swagger
    * /cart/{id}:
-   *    put:
+   *    post:
    *      tags:
    *        - Cart
    *      summary: Update Cart by id
@@ -141,6 +143,21 @@ module.exports = function (app) {
    *            schema:
    *              type: object
    *              properties:
+   *                detail:
+   *                  type: array
+   *                  items:
+   *                    type: object
+   *                    properties:
+   *                      productId:
+   *                        type: string
+   *                      name:
+   *                        type: string
+   *                      price:
+   *                        type: number
+   *                      amount:
+   *                        type: number
+   *                      totalPrice:
+   *                        type: number
    *                status:
    *                  type: number
    *      security:
@@ -149,7 +166,7 @@ module.exports = function (app) {
    *        200:
    *          description: Receive back cartId.
    */
-  app.put(
+  app.post(
     "/cart/:id",
     [authJwt.verifyToken], // authJwt.isAdmin
     controller.updateCart

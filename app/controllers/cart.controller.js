@@ -50,15 +50,14 @@ exports.getCart = (req, res) => {
 };
 
   exports.getCartByUserId = (req, res) => {
-    Cart.find(
+    Cart.findOne(
       { userId: req.params.userId },
-      "userId detail cartDate status",
       (err, cart) => {
         if (err) {
           res.status(500).send({ message: err });
           return;
         }
-        res.send({ cart: cart, total: cart.length });
+        res.send(cart);
       }
     );
   };
@@ -68,6 +67,7 @@ exports.updateCart = (req, res) => {
   Cart.findOneAndUpdate(
     { _id: req.params.id },
     {
+
       detail: req.body.detail,
       cartDate: moment.utc(),
       status: status,
@@ -77,7 +77,7 @@ exports.updateCart = (req, res) => {
         res.status(500).send({ message: err });
         return;
       }
-      res.send(cart._id);
+      res.send("cart was updated successfully!");
     }
   );
 };

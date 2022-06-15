@@ -14,6 +14,7 @@ const Order = mongoose.model(
     detail: [
         {
             productId: String,
+            name: String,
             price: Number,
             amount: Number,
             totalPrice: Number,
