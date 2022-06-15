@@ -72,10 +72,11 @@ exports.getOrder = (req, res) => {
   };
 
 exports.updateOrder = (req, res) => {
+  let status = parseInt(req.body.status);
   Order.findOneAndUpdate(
     { _id: req.params.id },
     {
-      detail: req.body.detail,
+      status: status
     },
     (err, order) => {
       if (err) {

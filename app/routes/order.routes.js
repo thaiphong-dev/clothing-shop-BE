@@ -45,6 +45,8 @@ module.exports = function (app) {
    *                    properties:
    *                      productId:
    *                        type: string
+   *                      name:
+   *                        type: string
    *                      price:
    *                        type: number
    *                      amount:
@@ -120,7 +122,7 @@ module.exports = function (app) {
    *    get:
    *      tags:
    *        - Order
-   *      summary: Get Annual Leave by userId
+   *      summary: Get Order by userId
    *      parameters:
    *        - name: userId
    *          in: path
@@ -157,19 +159,8 @@ module.exports = function (app) {
    *            schema:
    *              type: object
    *              properties:
-   *                detail:
-   *                  type: array
-   *                  items:
-   *                    type: object
-   *                    properties:
-   *                      productId:
-   *                        type: string
-   *                      price:
-   *                        type: number
-   *                      amount:
-   *                        type: number
-   *                      totalPrice:
-   *                        type: number
+   *                status:
+   *                  type: number
    *      security:
    *        - JWT: []
    *      responses:

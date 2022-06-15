@@ -67,6 +67,9 @@ exports.updateCart = (req, res) => {
   Cart.findOneAndUpdate(
     { _id: req.params.id },
     {
+
+      detail: req.body.detail,
+      cartDate: moment.utc(),
       status: status,
     },
     (err, cart) => {
