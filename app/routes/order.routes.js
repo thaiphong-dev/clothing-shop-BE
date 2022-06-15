@@ -47,6 +47,8 @@ module.exports = function (app) {
    *                        type: string
    *                      name:
    *                        type: string
+   *                      size:
+   *                        type: string
    *                      price:
    *                        type: number
    *                      amount:
