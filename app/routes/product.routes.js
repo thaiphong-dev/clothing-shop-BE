@@ -107,7 +107,7 @@ module.exports = function (app) {
   /**
    * @swagger
    * /product/{id}:
-   *    put:
+   *    post:
    *      tags:
    *        - Product
    *      summary: Update Product by id
@@ -137,6 +137,13 @@ module.exports = function (app) {
    *                   type: number
    *                productInfo:
    *                  type: array
+   *                  items:
+   *                    type: object
+   *                    properties:
+   *                      size:
+   *                        type: string
+   *                      amount:
+   *                        type: number
    *                status:
    *                  type: number
    *      security:
@@ -145,7 +152,7 @@ module.exports = function (app) {
    *        200:
    *          description: Receive back productId.
    */
-  app.put(
+  app.post(
     "/product/:id",
     [authJwt.verifyToken], // authJwt.isAdmin
     controller.updateProduct
