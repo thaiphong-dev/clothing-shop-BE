@@ -46,7 +46,7 @@ exports.getAll = (req, res, next) => {
 };
 
 exports.getProduct = (req, res) => {
-    Product.find({ _id: req.params.id }, (err, product) => {
+    Product.findOne({ _id: req.params.id }, (err, product) => {
         if (err) {
             res.status(500).send({ message: err });
         }

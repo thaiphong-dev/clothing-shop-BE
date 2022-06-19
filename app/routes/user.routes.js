@@ -48,6 +48,10 @@ module.exports = function (app) {
    *                  type: string
    *                username:
    *                  type: string
+   *                contact:
+   *                  type: string
+   *                address:
+   *                  type: string
    *      security:
    *        - JWT: []
    *      responses:
@@ -136,7 +140,7 @@ module.exports = function (app) {
   /**
    * @swagger
    * /users/{id}:
-   *    put:
+   *    post:
    *      tags:
    *        - Users
    *      summary: Update user by id
@@ -148,11 +152,19 @@ module.exports = function (app) {
    *      requestBody:
    *        required: true
    *        content:
-   *          application/:
+   *          application/json:
    *            schema:
    *              type: object
    *              properties:
-   *                fullName:
+   *                fullname:
+   *                  type: string
+   *                avatar:
+   *                  type: string
+   *                username:
+   *                  type: string
+   *                contact:
+   *                  type: string
+   *                address:
    *                  type: string
    *      security:
    *        - JWT: []
@@ -160,7 +172,7 @@ module.exports = function (app) {
    *        200:
    *          description: Receive back userId.
    */
-  app.put("/users/:id", [authJwt.verifyToken], controller.getUser);
+  app.post("/users/:id", [authJwt.verifyToken], controller.updateUser);
 
   /**
    * @swagger

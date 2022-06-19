@@ -50,7 +50,7 @@ exports.getAll = (req, res, next) => {
 
 exports.getOrder = (req, res) => {
 
-  Order.find({ _id: req.params.id }, (err, order) => {
+  Order.findOne({ _id: req.params.id }, (err, order) => {
     if (err) {
       res.status(500).send({ message: err });
     }
@@ -59,8 +59,22 @@ exports.getOrder = (req, res) => {
 };
 
   exports.getOrderByUserId = (req, res) => {
-    Order.findOne(
+    Order.find(
       { userId: req.params.userId },
+      (err, order) => {
+        if (err) {
+          res.status(500).send({ message: err });
+          return;
+        }
+        res.send(order);
+      }
+    );
+  };
+
+  exports.getOrderByStatus = (req, res) => {
+    let status = parseInt(req.body.status)
+    Order.find(
+      { status: status },
       (err, order) => {
         if (err) {
           res.status(500).send({ message: err });
