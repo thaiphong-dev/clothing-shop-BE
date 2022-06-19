@@ -8,6 +8,7 @@ const Cart = mongoose.model(
     detail: [
         {
             productId: String,
+            product: Object,
             name: String,
             size: String,
             price: Number,

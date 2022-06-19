@@ -3,8 +3,30 @@ const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config.js");
 const moment = require("moment-timezone");
 const Order = db.order;
-
+const Product = db.product
 exports.addOrder = (req, res) => {
+
+  let detail = []
+  let detailReq = req.body.detail
+  detailReq?.forEach(item => {
+
+    Product.findOne(
+      { _id: item.productId },
+      (err, product) => {
+        if (err) {
+          res.status(500).send({ message: err });
+          return;
+        }
+        detail.push({
+          ...item,
+          product: product
+        })
+      }
+    );
+
+  })
+
+setTimeout((detail) => {
   const order = new Order({
     //   id: String,
     userId: req.body.userId,
@@ -14,7 +36,7 @@ exports.addOrder = (req, res) => {
     country: req.body.country,
     address: req.body.address,
     contact: req.body.contact,
-    detail: req.body.detail,
+    detail: detail,
     paymentAddress: req.body.paymentAddress,
     paymentDate: moment.utc(),
     paymentType: req.body.paymentType,
@@ -27,6 +49,8 @@ exports.addOrder = (req, res) => {
     }
     res.send("order was added successfully!");
   });
+}, 1000, detail);
+  
 };
 
 exports.getAll = (req, res, next) => {

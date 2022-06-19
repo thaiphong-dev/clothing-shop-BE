@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config.js");
 const moment = require("moment-timezone");
 const Cart = db.cart;
+const Product = db.product;
 
 exports.addCart = (req, res) => {
   const cart = new Cart({
@@ -64,22 +65,45 @@ exports.getCart = (req, res) => {
 
 exports.updateCart = (req, res) => {
   let status = parseInt(req.body.status);
-  Cart.findOneAndUpdate(
-    { _id: req.params.id },
-    {
+  let detail = []
+  let detailReq = req.body.detail
+  detailReq?.forEach(item => {
 
-      detail: req.body.detail,
-      cartDate: moment.utc(),
-      status: status,
-    },
-    (err, cart) => {
-      if (err) {
-        res.status(500).send({ message: err });
-        return;
+    Product.findOne(
+      { _id: item.productId },
+      (err, product) => {
+        if (err) {
+          res.status(500).send({ message: err });
+          return;
+        }
+        detail.push({
+          ...item,
+          product: product
+        })
       }
-      res.send("cart was updated successfully!");
-    }
-  );
+    );
+
+  })
+
+  setTimeout((detail) => {
+    Cart.findOneAndUpdate(
+      { _id: req.params.id },
+      {
+  
+        detail: detail,
+        cartDate: moment.utc(),
+        status: status,
+      },
+      (err, cart) => {
+        if (err) {
+          res.status(500).send({ message: err });
+          return;
+        }
+        res.send(detail)
+      }
+    );
+  }, 500, detail);
+  
 };
 
 exports.deleteCart = (req, res) => {

@@ -193,7 +193,6 @@ exports.updateUser = (req, res) => {
     { _id: req.params.id },
     {
       fullname: req.body.fullname,
-      username: req.body.username,
       avatar: req.body.avatar,
       address: req.body.address,
       contact: req.body.contact,
