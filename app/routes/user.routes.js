@@ -160,8 +160,6 @@ module.exports = function (app) {
    *                  type: string
    *                avatar:
    *                  type: string
-   *                username:
-   *                  type: string
    *                contact:
    *                  type: string
    *                address:
