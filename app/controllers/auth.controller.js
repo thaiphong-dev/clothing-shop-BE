@@ -114,8 +114,10 @@ exports.signin = (req, res) => {
         refreshToken: refreshToken,
         userData: {
           id: user._id,
-          fullName: user.fullName,
+          fullName: user.fullname,
           username: user.username,
+          contact: user.contact,
+          address: user.address,
           avatar: '',
           email: user.email,
           role: authorities,

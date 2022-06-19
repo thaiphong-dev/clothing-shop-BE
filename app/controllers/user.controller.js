@@ -1,8 +1,10 @@
 const db = require("../models");
 const bcrypt = require("bcryptjs");
+const config = require("../config/auth.config");
 
 const User = db.user;
 const Role = db.role;
+var jwt = require("jsonwebtoken");
 
 exports.allAccess = (req, res) => {
   res.status(200).send("Public Content.");
@@ -25,11 +27,11 @@ exports.addUser = (req, res) => {
     fullname: req.body.fullname,
     username: req.body.username,
     email: req.body.email,
+    avatar: req.body.avatar || "",
 
+    address: req.body.address,
     contact: req.body.contact,
     status: req.body.status || 2,
-    avatar: req.body.avatar || "",
-    country: req.body.country,
 
     password: bcrypt.hashSync(req.body.password, 8),
   });
@@ -58,7 +60,7 @@ exports.addUser = (req, res) => {
               return;
             }
 
-            res.send({ message: "User was added successfully!" });
+            res.send(user);
           });
         }
       );
@@ -76,7 +78,44 @@ exports.addUser = (req, res) => {
             return;
           }
 
-          res.send({ message: "User was added successfully!" });
+          var token = jwt.sign({ id: user.id }, config.secret, {
+            expiresIn: 86400, // 24 hours
+          });
+
+          var refreshToken = jwt.sign(
+            { id: user.id },
+            config.secretRefreshToken,
+            {
+              expiresIn: 86400, // 24 hours
+            }
+          );
+
+          var authorities = [];
+
+          for (let i = 0; i < user.roles.length; i++) {
+            authorities.push(user.roles[i].name.toLowerCase());
+          }
+
+          res.status(200).send({
+            accessToken: token,
+            refreshToken: refreshToken,
+            userData: {
+              id: user._id,
+              fullName: user.fullname,
+              username: user.username,
+              contact: user.contact,
+              address: user.address,
+              avatar: "",
+              email: user.email,
+              role: authorities,
+              ability: [
+                {
+                  action: "manage",
+                  subject: "all",
+                },
+              ],
+            },
+          });
         });
       });
     }
@@ -152,7 +191,13 @@ exports.searchUser = (req, res) => {
 exports.updateUser = (req, res) => {
   User.findOneAndUpdate(
     { _id: req.params.id },
-    { fullName: req.body.fullName },
+    {
+      fullname: req.body.fullname,
+      username: req.body.username,
+      avatar: req.body.avatar,
+      address: req.body.address,
+      contact: req.body.contact,
+    },
     (err, user) => {
       if (err) {
         res.status(500).send({ message: err });

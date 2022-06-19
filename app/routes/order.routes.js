@@ -120,6 +120,30 @@ module.exports = function (app) {
 
   /**
    * @swagger
+   * /order/get-by-status:
+   *    post:
+   *      tags:
+   *        - Order
+   *      summary: Get Order by status
+   *      requestBody:
+   *        required: true
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                status:
+   *                  type: string 
+   *      security:
+   *        - JWT: []
+   *      responses:
+   *        200:
+   *          description: Receive back annualLeaveId.
+   */
+   app.post("/order/get-by-status", [authJwt.verifyToken], controller.getOrderByStatus);
+
+  /**
+   * @swagger
    * /order/get-by-userId/{userId}:
    *    get:
    *      tags:
