@@ -36,7 +36,7 @@ exports.getAll = (req, res, next) => {
     .exec((err, cart) => {
       Cart.countDocuments((err, count) => {
         if (err) return next(err);
-        res.send({ cart: cart, total: cart.length });
+        res.send({ cart: cart, total: count });
       });
     });
 };
