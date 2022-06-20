@@ -28,7 +28,7 @@ exports.addUser = (req, res) => {
     username: req.body.username,
     email: req.body.email,
     avatar: req.body.avatar || "",
-
+    role: req.body.role || "user",
     address: req.body.address,
     contact: req.body.contact,
     status: req.body.status || 2,
@@ -41,84 +41,28 @@ exports.addUser = (req, res) => {
       res.status(500).send({ message: err });
       return;
     }
+    var token = jwt.sign({ id: user.id }, config.secret, {
+      expiresIn: 86400, // 24 hours
+    });
 
-    if (req.body.roles) {
-      Role.find(
-        {
-          _id: { $in: req.body.roles[0] },
-        },
-        (err, roles) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
+    var refreshToken = jwt.sign({ id: user.id }, config.secretRefreshToken, {
+      expiresIn: 86400, // 24 hours
+    });
 
-          user.roles = roles.map((role) => role._id);
-          user.save((err) => {
-            if (err) {
-              res.status(500).send({ message: err });
-              return;
-            }
-
-            res.send(user);
-          });
-        }
-      );
-    } else {
-      Role.findOne({ name: "Client" }, (err, role) => {
-        if (err) {
-          res.status(500).send({ message: err });
-          return;
-        }
-
-        // user.roles = [role._id];  // để thì bị bad request vì chưa hiểu cách để thêm roleid vào
-        user.save((err) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-
-          var token = jwt.sign({ id: user.id }, config.secret, {
-            expiresIn: 86400, // 24 hours
-          });
-
-          var refreshToken = jwt.sign(
-            { id: user.id },
-            config.secretRefreshToken,
-            {
-              expiresIn: 86400, // 24 hours
-            }
-          );
-
-          var authorities = [];
-
-          for (let i = 0; i < user.roles.length; i++) {
-            authorities.push(user.roles[i].name.toLowerCase());
-          }
-
-          res.status(200).send({
-            accessToken: token,
-            refreshToken: refreshToken,
-            userData: {
-              id: user._id,
-              fullName: user.fullname,
-              username: user.username,
-              contact: user.contact,
-              address: user.address,
-              avatar: "",
-              email: user.email,
-              role: authorities,
-              ability: [
-                {
-                  action: "manage",
-                  subject: "all",
-                },
-              ],
-            },
-          });
-        });
-      });
-    }
+    res.status(200).send({
+      accessToken: token,
+      refreshToken: refreshToken,
+      userData: {
+        id: user._id,
+        fullName: user.fullname,
+        username: user.username,
+        contact: user.contact,
+        address: user.address,
+        avatar: "",
+        email: user.email,
+        role: user.role,
+      },
+    });
   });
 };
 
@@ -188,12 +132,30 @@ exports.searchUser = (req, res) => {
   }
 };
 
+exports.changePassword = (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.params.id },
+    {
+      password: bcrypt.hashSync(req.body.password, 8),
+    },
+    (err, user) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+      // update
+      res.send(user);
+    }
+  );
+};
+
 exports.updateUser = (req, res) => {
   User.findOneAndUpdate(
     { _id: req.params.id },
     {
       fullname: req.body.fullname,
       avatar: req.body.avatar,
+      role: req.body.role || "user",
       address: req.body.address,
       contact: req.body.contact,
     },

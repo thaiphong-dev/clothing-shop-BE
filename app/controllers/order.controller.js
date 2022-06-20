@@ -6,20 +6,84 @@ const Order = db.order;
 const Product = db.product
 exports.addOrder = (req, res) => {
 
+  let product = {
+    id: "",
+    productname: "",
+    price: 0,
+    preview: "",
+    image: "",
+    productType: "",
+    gender: 0,
+    productInfo: [
+        {
+          size: "",
+          amount: 0,
+        },
+      ],
+    status: 0
+  }
+
   let detail = []
   let detailReq = req.body.detail
+
+  
   detailReq?.forEach(item => {
 
     Product.findOne(
       { _id: item.productId },
-      (err, product) => {
+      (err, productres) => {
         if (err) {
           res.status(500).send({ message: err });
           return;
         }
+        if(!product.id || product?.id !== item.productId){
+        
+        product.id = productres._id
+        product.productname = productres.productname
+        product.preview = productres.preview
+        product.price = productres.price
+        product.image = productres.image
+        product.productInfo = productres.productInfo
+        product.status = productres.status
+
+        }
+        product.productInfo.forEach(x => {
+          if(x.size == item.size){
+            x.amount = x.amount - item.amount
+          }
+
+        })
+
+        console.log("product", product);
+
+        setTimeout((product) => {
+          Product.findOneAndUpdate(
+            { _id: product.id },
+            {
+                productname: product.productname,
+                price: product.price,
+                preview: product.preview,
+                image: product.image,
+                productType: product.productType,
+                gender: product.gender,
+                productInfo: product.productInfo,
+                status: product.status,
+            },
+            (err, product) => {
+                if (err) {
+                    res.status(500).send({ message: err });
+                    return;
+                }
+                // res.send("Product was updated successfully");
+            }
+        );
+        }, 1000, product);
+        
+
+
         detail.push({
           ...item,
-          product: product
+          product: productres
         })
       }
     );
