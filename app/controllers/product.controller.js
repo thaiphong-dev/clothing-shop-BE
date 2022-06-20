@@ -40,7 +40,7 @@ exports.getAll = (req, res, next) => {
         .exec((err, product) => {
             Product.countDocuments((err, count) => {
                 if (err) return next(err);
-                res.send({ product: product, total: product.length });
+                res.send({ product: product, total: count });
             });
         });
 };

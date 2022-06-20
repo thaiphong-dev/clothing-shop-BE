@@ -131,7 +131,7 @@ exports.getAll = (req, res, next) => {
     .exec((err, order) => {
       Order.countDocuments((err, count) => {
         if (err) return next(err);
-        res.send({ order: order, total: order.length });
+        res.send({ order: order, total: count });
       });
     });
 };

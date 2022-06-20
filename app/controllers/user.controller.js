@@ -81,7 +81,7 @@ exports.getAll = (req, res, next) => {
     .exec((err, users) => {
       User.countDocuments((err, count) => {
         if (err) return next(err);
-        res.send({ users: users, total: users.length });
+        res.send({ users: users, total: count });
       });
     });
 };
@@ -132,22 +132,22 @@ exports.searchUser = (req, res) => {
   }
 };
 
-exports.changePassword = (req, res) => {
-  User.findOneAndUpdate(
-    { _id: req.params.id },
-    {
-      password: bcrypt.hashSync(req.body.password, 8),
-    },
-    (err, user) => {
-      if (err) {
-        res.status(500).send({ message: err });
-        return;
-      }
-      // update
-      res.send(user);
-    }
-  );
-};
+// exports.changePassword = (req, res) => {
+//   User.findOneAndUpdate(
+//     { email: req.body.email },
+//     {
+//       password: bcrypt.hashSync(req.body.password, 8),
+//     },
+//     (err, user) => {
+//       if (err) {
+//         res.status(500).send({ message: err });
+//         return;
+//       }
+//       // update
+//       res.send(user);
+//     }
+//   );
+// };
 
 exports.updateUser = (req, res) => {
   User.findOneAndUpdate(

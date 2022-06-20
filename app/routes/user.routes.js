@@ -172,34 +172,34 @@ module.exports = function (app) {
    */
   app.post("/users/:id", [authJwt.verifyToken], controller.updateUser);
 
-  /**
-   * @swagger
-   * /users/changePassword/{id}:
-   *    post:
-   *      tags:
-   *        - Users
-   *      summary: changePassword user by id
-   *      parameters:
-   *        - name: id
-   *          in: path
-   *          required: true
-   *          type: string
-   *      requestBody:
-   *        required: true
-   *        content:
-   *          application/json:
-   *            schema:
-   *              type: object
-   *              properties:
-   *                password:
-   *                  type: string
-   *      security:
-   *        - JWT: []
-   *      responses:
-   *        200:
-   *          description: Receive back userId.
-   */
-   app.post("/users/changePassword/:id", [authJwt.verifyToken], controller.changePassword);
+  // /**
+  //  * @swagger
+  //  * /users/changePassword/{email}:
+  //  *    post:
+  //  *      tags:
+  //  *        - Users
+  //  *      summary: changePassword user by id
+  //  *      parameters:
+  //  *        - name: email
+  //  *          in: path
+  //  *          required: true
+  //  *          type: string
+  //  *      requestBody:
+  //  *        required: true
+  //  *        content:
+  //  *          application/json:
+  //  *            schema:
+  //  *              type: object
+  //  *              properties:
+  //  *                password:
+  //  *                  type: string
+  //  *      security:
+  //  *        - JWT: []
+  //  *      responses:
+  //  *        200:
+  //  *          description: Receive back userId.
+  //  */
+  //  app.post("/users/changePassword", controller.changePassword);
 
   /**
    * @swagger
