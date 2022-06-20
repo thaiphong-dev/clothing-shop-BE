@@ -118,8 +118,9 @@ exports.signin = (req, res) => {
           username: user.username,
           contact: user.contact,
           address: user.address,
-          avatar: '',
+          avatar: user.avatar,
           email: user.email,
+          userRole: user.userRole,
           role: authorities,
           ability: [
             {
