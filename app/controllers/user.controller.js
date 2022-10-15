@@ -1,4 +1,8 @@
+var config = require("../config/db.config");
+const sql = require("mssql")
+
 const db = require("../models");
+
 const bcrypt = require("bcryptjs");
 
 const User = db.user;
@@ -20,67 +24,29 @@ exports.moderatorBoard = (req, res) => {
   res.status(200).send("Moderator Content.");
 };
 
-exports.addUser = (req, res) => {
-  const user = new User({
-    fullname: req.body.fullname,
-    username: req.body.username,
-    email: req.body.email,
+exports.addUser = async (req, res) => {
+  try {
+    let connection = await sql.connect(config);
+    let result = await connection.request()
+            .input('hoTen', sql.NVarChar, req.body.username)
+            .input('sdt', sql.VarChar, req.body.sdt.toString())
+            .input('email', sql.VarChar, req.body.email)
+            .input('diaChi', sql.NVarChar, req.body.address)
+            .input('cmnd', sql.VarChar, req.body.cmnd.toString())
+            .input('password', sql.VarChar, req.body.password)
+            .input('maQuyen', sql.Int, 4)
+            .execute("sp_TaoTaiKhoanChoKhachHang");
+    console.log("ds result", result);
 
-    contact: req.body.contact,
-    status: req.body.status || 2,
-    avatar: req.body.avatar || "",
-    country: req.body.country,
+    return res.status(200).send({data:result.recordsets});
+} catch (error) {
+    console.log(error)
+}
 
-    password: bcrypt.hashSync(req.body.password, 8),
-  });
 
-  user.save((err, user) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
+        
+        
 
-    if (req.body.roles) {
-      Role.find(
-        {
-          _id: { $in: req.body.roles[0] },
-        },
-        (err, roles) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-
-          user.roles = roles.map((role) => role._id);
-          user.save((err) => {
-            if (err) {
-              res.status(500).send({ message: err });
-              return;
-            }
-
-            res.send({ message: "User was added successfully!" });
-          });
-        }
-      );
-    } else {
-      Role.findOne({ name: "Client" }, (err, role) => {
-        if (err) {
-          res.status(500).send({ message: err });
-          return;
-        }
-
-        // user.roles = [role._id];  // để thì bị bad request vì chưa hiểu cách để thêm roleid vào
-        user.save((err) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-
-          res.send({ message: "User was added successfully!" });
-        });
-      });
-    }
-  });
 };
 
 exports.getAll = (req, res, next) => {

@@ -57,8 +57,8 @@ module.exports = function (app) {
   app.post(
     "/users",
     [
-      verifySignUp.checkDuplicateUsernameOrEmail,
-      verifySignUp.checkRolesExisted,
+      // verifySignUp.checkDuplicateUsernameOrEmail,
+      // verifySignUp.checkRolesExisted,
     ],
     controller.addUser
   );

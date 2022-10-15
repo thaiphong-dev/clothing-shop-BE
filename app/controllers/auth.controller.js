@@ -1,7 +1,9 @@
-const config = require("../config/auth.config");
+const authConfig = require("../config/auth.config");
 const db = require("../models");
 const sendEmailConfig = require("../config/sendEmail.config")
 const sendEmail = require("../util/sendEmail")
+const sql = require("mssql")
+var config = require("../config/db.config");
 
 const User = db.user;
 const Role = db.role;
@@ -67,74 +69,44 @@ exports.signup = (req, res) => {
   });
 };
 
-exports.signin = (req, res) => {
-  User.findOne({
-    email: req.body.email
-  })
-    .populate("roles", "-__v")
-    .exec((err, user) => {
-      if (err) {
-        res.status(500).send({ message: err });
-        return;
-      }
-
-      if (!user) {
-        return res.status(404).send({ message: "Email or Password is invalid!" });
-      }
-
-      var passwordIsValid = bcrypt.compareSync(
-        req.body.password,
-        user.password
-      );
-
-      if (!passwordIsValid) {
-        return res.status(401).send({
-          accessToken: null,
-          message: "Email or Password is invalid!"
-        });
-      }
-
-      var token = jwt.sign({ id: user.id }, config.secret, {
-        expiresIn: 86400 // 24 hours
-      });
-
-      var refreshToken = jwt.sign({ id: user.id }, config.secretRefreshToken, {
-        expiresIn: 86400 // 24 hours
-      });
-
-      var authorities = [];
-
-      for (let i = 0; i < user.roles.length; i++) {
-        authorities.push(user.roles[i].name.toLowerCase());
-      }
-
-      // TODO: get data from server
-      res.status(200).send({
-        accessToken: token,
-        refreshToken: refreshToken,
-        userData: {
-          id: user._id,
-          fullName: user.fullName,
-          username: user.username,
-          avatar: '',
-          email: user.email,
-          role: authorities,
-          ability: [
-            {
-              action: 'manage',
-              subject: 'all'
-            }
-          ]
-        },
-      });
+exports.signin = async (req, res) => {
+  try {
+    let connection = await sql.connect(config);
+    let result = await connection.request()
+            .input('email', sql.VarChar, req.body.email)
+            .input('password', sql.VarChar, req.body.password)
+            .execute("sp_DangNhap");
+    var token = jwt.sign({ id: result.recordset[0].email }, authConfig.secret, {
+      expiresIn: 86400 // 24 hours
     });
+
+    let tk = await connection.request().query(`SELECT * FROM TaiKhoan`)
+
+    let data = result.recordset.map( x => ({...x, maQuyen: tk.recordset.filter( y => y.maTK === x.maTK)[0].maQuyen}))
+
+    let response = {
+      token: token,
+      ...data[0]
+    }
+    console.log("ds result", response);
+
+    // var refreshToken = jwt.sign({ id: user.id }, config.secretRefreshToken, {
+    //   expiresIn: 86400 // 24 hours
+    // });
+
+    // var authorities = [];
+
+    return res.status(200).send({data:response});
+} catch (error) {
+     return res.status(400).send({message:error})
+}
 };
 
 exports.refreshToken = (req, res) => {
   const refreshToken = req.body.refreshToken;
 
   try {
-    const { id } = jwt.verify(refreshToken, config.secret)
+    const { id } = jwt.verify(refreshToken, authConfig.secret)
 
     const userData = { ...data.users.find(user => user.id === id) }
 
