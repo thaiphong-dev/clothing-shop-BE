@@ -28,7 +28,7 @@ module.exports = function (app) {
 
   /**
    * @swagger
-   * /users:
+   * /signup:
    *    post:
    *      tags:
    *        - Users
@@ -48,6 +48,10 @@ module.exports = function (app) {
    *                  type: string
    *                username:
    *                  type: string
+   *                contact:
+   *                  type: string
+   *                address:
+   *                  type: string
    *      security:
    *        - JWT: []
    *      responses:
@@ -55,7 +59,7 @@ module.exports = function (app) {
    *          description: Receive back userId.
    */
   app.post(
-    "/users",
+    "/signup",
     [
       // verifySignUp.checkDuplicateUsernameOrEmail,
       // verifySignUp.checkRolesExisted,
@@ -136,7 +140,7 @@ module.exports = function (app) {
   /**
    * @swagger
    * /users/{id}:
-   *    put:
+   *    post:
    *      tags:
    *        - Users
    *      summary: Update user by id
@@ -148,11 +152,17 @@ module.exports = function (app) {
    *      requestBody:
    *        required: true
    *        content:
-   *          application/:
+   *          application/json:
    *            schema:
    *              type: object
    *              properties:
-   *                fullName:
+   *                fullname:
+   *                  type: string
+   *                avatar:
+   *                  type: string
+   *                contact:
+   *                  type: string
+   *                address:
    *                  type: string
    *      security:
    *        - JWT: []
@@ -160,7 +170,36 @@ module.exports = function (app) {
    *        200:
    *          description: Receive back userId.
    */
-  app.put("/users/:id", [authJwt.verifyToken], controller.getUser);
+  app.post("/users/:id", [authJwt.verifyToken], controller.updateUser);
+
+  // /**
+  //  * @swagger
+  //  * /users/changePassword/{email}:
+  //  *    post:
+  //  *      tags:
+  //  *        - Users
+  //  *      summary: changePassword user by id
+  //  *      parameters:
+  //  *        - name: email
+  //  *          in: path
+  //  *          required: true
+  //  *          type: string
+  //  *      requestBody:
+  //  *        required: true
+  //  *        content:
+  //  *          application/json:
+  //  *            schema:
+  //  *              type: object
+  //  *              properties:
+  //  *                password:
+  //  *                  type: string
+  //  *      security:
+  //  *        - JWT: []
+  //  *      responses:
+  //  *        200:
+  //  *          description: Receive back userId.
+  //  */
+  //  app.post("/users/changePassword", controller.changePassword);
 
   /**
    * @swagger

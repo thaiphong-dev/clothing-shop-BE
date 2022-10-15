@@ -1,5 +1,5 @@
 const { authJwt, verifySignUp } = require("../middlewares");
-const controller = require("../controllers/card.controller");
+const controller = require("../controllers/cart.controller");
 
 module.exports = function (app) {
   app.use(function (req, res, next) {
@@ -12,11 +12,11 @@ module.exports = function (app) {
 
   /**
    * @swagger
-   * /card:
+   * /cart:
    *    post:
    *      tags:
-   *        - Card
-   *      summary: Add a new Card
+   *        - Cart
+   *      summary: Add a new Cart
    *      requestBody:
    *        required: true
    *        content:
@@ -26,18 +26,6 @@ module.exports = function (app) {
    *              properties:
    *                userId:
    *                  type: string
-   *                username:
-   *                  type: string
-   *                fullname:
-   *                  type: string
-   *                email:
-   *                  type: string
-   *                country:
-   *                  type: string
-   *                address:
-   *                  type: string
-   *                contact:
-   *                  type: string
    *                detail:
    *                  type: array
    *                  items:
@@ -45,34 +33,34 @@ module.exports = function (app) {
    *                    properties:
    *                      productId:
    *                        type: string
+   *                      name:
+   *                        type: string
+   *                      size:
+   *                        type: string
    *                      price:
    *                        type: number
    *                      amount:
    *                        type: number
    *                      totalPrice:
    *                        type: number
-   *                paymentAddress:
-   *                  type: string
-   *                paymentType:
-   *                  type: string
    *                status:
    *                  type: number
    *      security:
    *        - JWT: []
    *      responses:
    *        201:
-   *          description: Receive back cardId.
+   *          description: Receive back cartId.
    *
    */
-  app.post("/card", [authJwt.verifyToken], controller.addCard);
+  app.post("/cart", [authJwt.verifyToken], controller.addCart);
 
   /**
    * @swagger
-   * /card:
+   * /cart:
    *    get:
    *      tags:
-   *        - Card
-   *      summary: Get all Card
+   *        - Cart
+   *      summary: Get all Cart
    *      parameters:
    *        - name: keyword
    *          in: query
@@ -90,17 +78,17 @@ module.exports = function (app) {
    *        - JWT: []
    *      responses:
    *        200:
-   *          description: Receive back a card list.
+   *          description: Receive back a cart list.
    */
-  app.get("/card", [authJwt.verifyToken], controller.getAll);
+  app.get("/cart", [authJwt.verifyToken], controller.getAll);
 
   /**
    * @swagger
-   * /card/{id}:
+   * /cart/{id}:
    *    get:
    *      tags:
-   *        - Card
-   *      summary: Get Card by id
+   *        - Cart
+   *      summary: Get Cart by id
    *      parameters:
    *        - name: id
    *          in: path
@@ -112,15 +100,15 @@ module.exports = function (app) {
    *        200:
    *          description: Receive back annualLeaveId.
    */
-  app.get("/card/:id", [authJwt.verifyToken], controller.getCard);
+  app.get("/cart/:id", [authJwt.verifyToken], controller.getCart);
 
   /**
    * @swagger
-   * /card/get-by-userId/{userId}:
+   * /cart/get-by-userId/{userId}:
    *    get:
    *      tags:
-   *        - Card
-   *      summary: Get Annual Leave by userId
+   *        - Cart
+   *      summary: Get Cart by userId
    *      parameters:
    *        - name: userId
    *          in: path
@@ -130,21 +118,21 @@ module.exports = function (app) {
    *        - JWT: []
    *      responses:
    *        200:
-   *          description: Receive back cardId.
+   *          description: Receive back cartId.
    */
    app.get(
-    "/card/get-by-userId/:userId",
+    "/cart/get-by-userId/:userId",
     [authJwt.verifyToken],
-    controller.getCardByUserId
+    controller.getCartByUserId
   );
 
   /**
    * @swagger
-   * /card/{id}:
-   *    put:
+   * /cart/{id}:
+   *    post:
    *      tags:
-   *        - Card
-   *      summary: Update Card by id
+   *        - Cart
+   *      summary: Update Cart by id
    *      parameters:
    *        - name: id
    *          in: path
@@ -157,27 +145,44 @@ module.exports = function (app) {
    *            schema:
    *              type: object
    *              properties:
+   *                detail:
+   *                  type: array
+   *                  items:
+   *                    type: object
+   *                    properties:
+   *                      productId:
+   *                        type: string
+   *                      name:
+   *                        type: string
+   *                      size:
+   *                        type: string
+   *                      price:
+   *                        type: number
+   *                      amount:
+   *                        type: number
+   *                      totalPrice:
+   *                        type: number
    *                status:
    *                  type: number
    *      security:
    *        - JWT: []
    *      responses:
    *        200:
-   *          description: Receive back cardId.
+   *          description: Receive back cartId.
    */
-  app.put(
-    "/card/:id",
+  app.post(
+    "/cart/:id",
     [authJwt.verifyToken], // authJwt.isAdmin
-    controller.updateCard
+    controller.updateCart
   );
 
   /**
    * @swagger
-   * /card/{id}:
+   * /cart/{id}:
    *    delete:
    *      tags:
-   *        - Card
-   *      summary: Delete a Card by id
+   *        - Cart
+   *      summary: Delete a Cart by id
    *      parameters:
    *        - name: id
    *          in: path
@@ -189,7 +194,7 @@ module.exports = function (app) {
    *        400:
    *          description: Invalid Id.
    *        404:
-   *          descriptionL: Card not found.
+   *          descriptionL: Cart not found.
    */
-  app.delete("/card/:id", [authJwt.verifyToken], controller.deleteCard);
+  app.delete("/cart/:id", [authJwt.verifyToken], controller.deleteCart);
 };

@@ -4,9 +4,11 @@ const sql = require("mssql")
 const db = require("../models");
 
 const bcrypt = require("bcryptjs");
+const config = require("../config/auth.config");
 
 const User = db.user;
 const Role = db.role;
+var jwt = require("jsonwebtoken");
 
 exports.allAccess = (req, res) => {
   res.status(200).send("Public Content.");
@@ -64,7 +66,7 @@ exports.getAll = (req, res, next) => {
     .exec((err, users) => {
       User.countDocuments((err, count) => {
         if (err) return next(err);
-        res.send({ users: users, total: users.length });
+        res.send({ users: users, total: count });
       });
     });
 };
@@ -118,7 +120,13 @@ exports.searchUser = (req, res) => {
 exports.updateUser = (req, res) => {
   User.findOneAndUpdate(
     { _id: req.params.id },
-    { fullName: req.body.fullName },
+    {
+      fullname: req.body.fullname,
+      avatar: req.body.avatar,
+      userRole: req.body.userRole || "user",
+      address: req.body.address,
+      contact: req.body.contact,
+    },
     (err, user) => {
       if (err) {
         res.status(500).send({ message: err });
